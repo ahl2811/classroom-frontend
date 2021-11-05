@@ -9,20 +9,26 @@ import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
 import RoomsPage from './pages/RoomsPage';
 import { AppProvider } from './store/store';
+import { QueryClient, QueryClientProvider } from 'react-query';
+import { ReactQueryDevtools } from 'react-query/devtools';
 
 function App() {
+  const queryClient = new QueryClient();
   return (
-    <AppProvider>
-      <Router>
-        <Switch>
-          <ProtectedRoute path="/" exact>
-            <RoomsPage />
-          </ProtectedRoute>
-          <Route path="/login" component={LoginPage} />
-          <Route path="/register" component={RegisterPage} />
-        </Switch>
-      </Router>
-    </AppProvider>
+    <QueryClientProvider client={queryClient}>
+      <AppProvider>
+        <Router>
+          <Switch>
+            <ProtectedRoute path="/" exact>
+              <RoomsPage />
+            </ProtectedRoute>
+            <Route path="/login" component={LoginPage} />
+            <Route path="/register" component={RegisterPage} />
+          </Switch>
+        </Router>
+      </AppProvider>
+      <ReactQueryDevtools initialIsOpen={false} />
+    </QueryClientProvider>
   );
 }
 

@@ -10,9 +10,7 @@ import { OptionItem } from './styled/OptionStyle';
 
 export default function Header() {
   const {
-    state: {
-      userState: { user },
-    },
+    state: { user },
     dispatch,
   } = useContext(store);
   const [showRoomCreation, setShowRoomCreation] = useState(false);

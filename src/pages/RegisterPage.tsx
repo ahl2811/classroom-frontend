@@ -1,39 +1,24 @@
-import Axios from 'axios';
 import React, { FormEvent, useContext, useEffect, useState } from 'react';
 import { Alert, Button, Form, Row, Spinner } from 'react-bootstrap';
+import { useMutation } from 'react-query';
 import { useHistory, useLocation } from 'react-router';
 import { Link } from 'react-router-dom';
-import { SERVER_URL } from '../common/constants';
-import { IUserResponse } from '../common/types';
+import { register } from '../api/user';
+import { USER } from '../common/constants';
+import { LocationState } from '../common/types';
 import {
   GradientBackground,
   StyledContainer,
 } from '../components/styled/CommonStyle';
-import {
-  RegisterError,
-  RegisterRequest,
-  RegisterSuccess,
-  RegisterReset,
-} from '../store/actions';
 import { store } from '../store/store';
 
-interface LocationState {
-  from: {
-    pathname: string;
-  };
-}
-
-const LoginPage: React.FC<{}> = () => {
+const RegisterPage = () => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const {
-    state: {
-      userState: { user },
-      userRegisterState: { loading, error, message },
-    },
-    dispatch,
+    state: { user },
   } = useContext(store);
   const history = useHistory();
   const location = useLocation<LocationState>();
@@ -46,36 +31,21 @@ const LoginPage: React.FC<{}> = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user]);
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  useEffect(() => dispatch(RegisterReset()), []);
+  const {
+    isLoading: loading,
+    data,
+    mutateAsync: Register,
+  } = useMutation(USER.REGISTER, register);
 
   const handleRegister = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (password !== confirmPassword) {
-      dispatch(RegisterError('Mật khẩu xác nhận không chính xác'));
+      alert('Mật khẩu xác nhận không đúng');
       return;
     }
-    dispatch(RegisterRequest());
-    try {
-      const { data } = await Axios.post<IUserResponse>(
-        `${SERVER_URL}/users/register`,
-        {
-          email,
-          password,
-          name,
-        }
-      );
-      if (data.error) {
-        dispatch(RegisterError(data.error));
-        return;
-      }
-      if (data.message) {
-        dispatch(RegisterSuccess(data.message));
-        setTimeout(() => history.push('/login'), 800);
-        return;
-      }
-    } catch (err) {
-      dispatch(RegisterError(String(err)));
+    const res = await Register({ email, name, password });
+    if (res.message) {
+      setTimeout(() => history.push('/login'), 900);
     }
   };
 
@@ -86,10 +56,10 @@ const LoginPage: React.FC<{}> = () => {
           <h2>Đăng ký</h2>
         </Row>
         <Row className="px-2">
-          {message ? (
-            <Alert variant="success">{message}</Alert>
+          {data?.message ? (
+            <Alert variant="success">{data?.message}</Alert>
           ) : (
-            error && <Alert variant="danger">{error}</Alert>
+            data?.error && <Alert variant="danger">{data?.error}</Alert>
           )}
         </Row>
         <Row>
@@ -164,4 +134,4 @@ const LoginPage: React.FC<{}> = () => {
   );
 };
 
-export default LoginPage;
+export default RegisterPage;

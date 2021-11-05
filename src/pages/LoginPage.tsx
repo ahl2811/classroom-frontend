@@ -1,35 +1,23 @@
-import Axios from 'axios';
 import React, { FormEvent, useContext, useEffect, useState } from 'react';
 import { Alert, Button, Form, Row, Spinner } from 'react-bootstrap';
+import { useMutation } from 'react-query';
 import { useHistory, useLocation } from 'react-router';
 import { Link } from 'react-router-dom';
-import { SERVER_URL } from '../common/constants';
-import { IUserResponse } from '../common/types';
+import { login } from '../api/user';
+import { USER } from '../common/constants';
+import { LocationState } from '../common/types';
 import {
   GradientBackground,
   StyledContainer,
 } from '../components/styled/CommonStyle';
-import {
-  LoginRequest,
-  LoginSuccess,
-  LoginError,
-  LoginReset,
-} from '../store/actions';
+import { LoginSuccess } from '../store/actions';
 import { store } from '../store/store';
 
-interface LocationState {
-  from: {
-    pathname: string;
-  };
-}
-
-const LoginPage: React.FC<{}> = () => {
+const LoginPage = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const {
-    state: {
-      userState: { user, loading, error },
-    },
+    state: { user },
     dispatch,
   } = useContext(store);
   const history = useHistory();
@@ -43,30 +31,17 @@ const LoginPage: React.FC<{}> = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user]);
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  useEffect(() => dispatch(LoginReset()), []);
+  const {
+    isLoading: loading,
+    data,
+    mutateAsync: Login,
+  } = useMutation(USER.LOGIN, login);
 
   const handleLogin = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    dispatch(LoginRequest());
-    try {
-      const { data } = await Axios.post<IUserResponse>(
-        `${SERVER_URL}/users/login`,
-        {
-          email,
-          password,
-        }
-      );
-      if (data.error) {
-        dispatch(LoginError(data.error));
-        return;
-      }
-      if (data.user) {
-        dispatch(LoginSuccess(data.user));
-        return;
-      }
-    } catch (err) {
-      dispatch(LoginError(String(err)));
+    const res = await Login({ email, password });
+    if (res.user) {
+      dispatch(LoginSuccess(res.user));
     }
   };
 
@@ -77,7 +52,7 @@ const LoginPage: React.FC<{}> = () => {
           <h2>Đăng nhập</h2>
         </Row>
         <Row className="px-2">
-          {error && <Alert variant="danger">{error}</Alert>}
+          {data?.error && <Alert variant="danger">{data?.error}</Alert>}
         </Row>
         <Row>
           <Form onSubmit={(e) => handleLogin(e)}>

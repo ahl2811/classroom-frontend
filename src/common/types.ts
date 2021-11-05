@@ -1,16 +1,23 @@
 export interface IUser {
-  name: string;
+  name?: string;
   email: string;
   avatar?: string;
-  token: string;
+  token?: string;
+  password?: string;
 }
 
 export interface IRoom {
   name: string;
-  code: string;
-  owner: IUser;
+  code?: string;
+  owner?: IUser;
   description?: string;
-  members: IUser[];
+  members?: IUser[];
+}
+
+export interface LocationState {
+  from: {
+    pathname: string;
+  };
 }
 
 export interface IResponse {

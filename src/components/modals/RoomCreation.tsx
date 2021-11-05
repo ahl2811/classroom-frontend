@@ -1,4 +1,3 @@
-import axios from 'axios';
 import React, { FormEvent, useContext, useState } from 'react';
 import {
   Alert,
@@ -10,52 +9,30 @@ import {
   ModalProps,
   Spinner,
 } from 'react-bootstrap';
-import { SERVER_URL } from '../../common/constants';
-import { IRoomResponse, IUser } from '../../common/types';
-import useAuth from '../../hooks/useAuth';
+import { IUser } from '../../common/types';
+import { useRoomCreate } from '../../hooks/useRoomQuery';
 import { store } from '../../store/store';
-import {
-  CreateRoomError,
-  CreateRoomRequest,
-  CreateRoomSuccess,
-} from '../../store/actions';
 
 export default function RoomCreation(props: ModalProps) {
   const [roomName, setRoomName] = useState('');
   const [description, setDescription] = useState('');
-
   const {
-    state: {
-      userState: { user },
-      roomsState: { loading, error },
-    },
-    dispatch,
+    state: { user },
   } = useContext(store);
 
-  const { Authorization } = useAuth();
+  const {
+    isLoading: loading,
+    data,
+    mutateAsync: createRoom,
+  } = useRoomCreate(user as IUser);
 
   const handleCreateRoom = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    dispatch(CreateRoomRequest());
-    try {
-      const { data } = await axios.post<IRoomResponse>(
-        `${SERVER_URL}/rooms`,
-        { name: roomName, description },
-        Authorization
-      );
-      if (data.error) {
-        dispatch(CreateRoomError(data.error as string));
-        return;
-      }
-      if (data.room) {
-        data.room.owner = user as IUser;
-        dispatch(CreateRoomSuccess(data.room));
-        setRoomName('');
-        setDescription('');
-        props.onHide();
-      }
-    } catch (err) {
-      dispatch(CreateRoomError(err as string));
+    const res = await createRoom({ name: roomName, description });
+    if (res.data?.room) {
+      setRoomName('');
+      setDescription('');
+      props.onHide();
     }
   };
 
@@ -66,9 +43,9 @@ export default function RoomCreation(props: ModalProps) {
           <Modal.Title>Tạo lớp học</Modal.Title>
         </Modal.Header>
         <Modal.Body className="my-3">
-          {error && (
+          {data?.data.error && (
             <Alert variant="danger" dismissible>
-              {error}
+              {data?.data.error}
             </Alert>
           )}
           <FloatingLabel label="Tên lớp học (bắt buộc)">

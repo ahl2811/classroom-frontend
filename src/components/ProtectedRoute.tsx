@@ -8,7 +8,7 @@ export default function ProtectedRoute({
 }: RouteProps) {
   const {
     state: {
-      userState: { user },
+     user
     },
   } = useContext(store);
   return (
