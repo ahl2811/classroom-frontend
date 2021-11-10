@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled from "styled-components";
 
 export const StyledOptions = styled.div<{
   isActive: boolean;
@@ -12,18 +12,18 @@ export const StyledOptions = styled.div<{
 
   ${({ isActive }) =>
     isActive
-      ? 'background: rgba(0, 0, 0, 0.15);'
-      : '&:hover {background: rgba(0, 0, 0, 0.1); .bi{opacity: 0.85;}}'};
+      ? "background: rgba(0, 0, 0, 0.15);"
+      : "&:hover {background: rgba(0, 0, 0, 0.1); .bi, .icon{opacity: 0.85;}}"};
 
   .icon {
-    border-radius: 40px;
+    border-radius: 50%;
     overflow: hidden;
   }
 `;
 
 export const OptionMenu = styled.div`
   position: absolute;
-  top: 110%;
+  top: calc(100% + 4px);
   right: 0;
   background: #fff;
   border-radius: 4px;

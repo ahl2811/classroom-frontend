@@ -1,13 +1,13 @@
-import React from 'react';
-import { Button, Card, Col, Container, Row } from 'react-bootstrap';
-import { useQuery } from 'react-query';
-import { Link } from 'react-router-dom';
-import { getRooms } from '../api/room';
-import { ROOM } from '../common/constants';
-import Header from '../components/Header';
-import Options from '../components/Options';
-import { OptionItem } from '../components/styled/OptionStyle';
-import { RoomCard } from '../components/styled/RoomStyle';
+import React from "react";
+import { Button, Card, Col, Container, Row } from "react-bootstrap";
+import { useQuery } from "react-query";
+import { Link } from "react-router-dom";
+import { getRooms } from "../api/room";
+import { ROOM } from "../common/constants";
+import Header from "../components/Header";
+import Options from "../components/Options";
+import { OptionItem } from "../components/styled/OptionStyle";
+import { RoomCard } from "../components/styled/RoomStyle";
 
 export default function RoomsPage() {
   const { isLoading, data } = useQuery(ROOM.GET, getRooms);
@@ -37,7 +37,7 @@ export default function RoomsPage() {
                       src="https://picsum.photos/300/100"
                     />
                     <div className="position-absolute mt-4 ms-3 title text-white">
-                      <Link to="/">
+                      <Link to={`/${room.code}`}>
                         <Card.Title className="text-truncate text-white link">
                           {room.name}
                         </Card.Title>
