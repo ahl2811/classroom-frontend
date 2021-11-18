@@ -1,12 +1,18 @@
-import React, { ReactElement, useRef, useState } from 'react';
-import useOnClickOutside from '../hooks/useOnClickOutSide';
-import { OptionMenu, StyledOptions } from './styled/OptionStyle';
+import React, { ReactElement, useRef, useState } from "react";
+import useOnClickOutside from "../hooks/useOnClickOutSide";
+import { OptionMenu, StyledOptions } from "./styled/OptionStyle";
 
 interface IOptionsProps extends React.HTMLAttributes<HTMLDivElement> {
   icon: ReactElement;
+  menuCenter?: boolean;
 }
 
-function Options({ icon, children, ...rest }: IOptionsProps) {
+function Options({
+  icon,
+  menuCenter = false,
+  children,
+  ...rest
+}: IOptionsProps) {
   const [showMenu, setShowMenu] = useState(false);
 
   const ref = useRef(null);
@@ -25,8 +31,10 @@ function Options({ icon, children, ...rest }: IOptionsProps) {
         ref={ref}
         {...rest}
       >
-        <div className="icon">{icon}</div>
-        {showMenu && <OptionMenu>{children}</OptionMenu>}
+        <div className="blur-hover icon">{icon}</div>
+        {showMenu && (
+          <OptionMenu menuCenter={menuCenter}>{children}</OptionMenu>
+        )}
       </StyledOptions>
     </>
   );

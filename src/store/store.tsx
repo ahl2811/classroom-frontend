@@ -1,10 +1,10 @@
-import React, { createContext, useReducer } from 'react';
-import { IUser } from '../common/types';
-import { Actions, IAppContext, IStoreState, UserActionType } from './types';
+import React, { createContext, useReducer } from "react";
+import { IUser } from "../common/types";
+import { Actions, IAppContext, IStoreState, UserActionType } from "./types";
 
 const initialState: IStoreState = {
-  user: localStorage.getItem('user')
-    ? JSON.parse(localStorage.getItem('user') as string)
+  user: localStorage.getItem("user")
+    ? JSON.parse(localStorage.getItem("user") as string)
     : null,
 };
 
@@ -19,13 +19,13 @@ const reducer = (state: IStoreState, action: Actions): IStoreState => {
   switch (action.type) {
     case UserActionType.LoginSuccess:
       const user = action.payload as IUser;
-      localStorage.setItem('user', JSON.stringify(user));
+      localStorage.setItem("user", JSON.stringify(user));
       return {
         ...state,
         user,
       };
     case UserActionType.Logout:
-      localStorage.removeItem('user');
+      localStorage.removeItem("user");
       return { ...state, user: null };
     default:
       return state;

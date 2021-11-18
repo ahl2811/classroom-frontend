@@ -1,5 +1,5 @@
-import { Card } from 'react-bootstrap';
-import styled from 'styled-components';
+import { Card } from "react-bootstrap";
+import styled from "styled-components";
 
 export const RoomCard = styled(Card)`
   &:hover {
@@ -21,5 +21,25 @@ export const RoomCard = styled(Card)`
     &:hover {
       text-decoration: underline;
     }
+  }
+`;
+
+export const CodeCard = styled(Card)`
+  .code {
+    font-size: 18px;
+    color: teal;
+    font-weight: 500;
+    letter-spacing: 1px;
+  }
+`;
+
+export const PostNotifyCard = styled(Card)`
+  height: 72px;
+  box-shadow: 0 0 8px #ccc;
+  display: flex;
+  cursor: pointer;
+
+  .avatar {
+    width: 72px;
   }
 `;

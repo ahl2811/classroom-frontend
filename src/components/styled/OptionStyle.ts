@@ -13,7 +13,7 @@ export const StyledOptions = styled.div<{
   ${({ isActive }) =>
     isActive
       ? "background: rgba(0, 0, 0, 0.15);"
-      : "&:hover {background: rgba(0, 0, 0, 0.1); .bi, .icon{opacity: 0.85;}}"};
+      : "&:hover {background: rgba(0, 0, 0, 0.1); .blur-hover{opacity: 0.85}}"};
 
   .icon {
     border-radius: 50%;
@@ -21,18 +21,24 @@ export const StyledOptions = styled.div<{
   }
 `;
 
-export const OptionMenu = styled.div`
+export const OptionMenu = styled.div<{ menuCenter?: boolean }>`
   position: absolute;
   top: calc(100% + 4px);
   right: 0;
   background: #fff;
   border-radius: 4px;
-  border: 1px solid #eee;
-  box-shadow: 0px 1px 1px #999;
+  border: 1px solid rgba(0, 0, 0, 0.15);
   text-align: left;
   padding: 8px 0px;
   white-space: nowrap;
   line-height: 32px;
+  min-width: 160px;
+  background-clip: padding-box;
+  z-index: 9999;
+
+  ${(props) =>
+    props.menuCenter &&
+    "right: 50%; transform: translate(50%, 0); @media screen and (max-width: 767px){right: 0; transform: none}"}
 `;
 
 export const OptionItem = styled.div`

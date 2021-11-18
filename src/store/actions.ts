@@ -1,8 +1,5 @@
-import { IUser } from '../common/types';
-import {
-  IUserLogin,
-  IUserLogout, UserActionType
-} from './types';
+import { IUser } from "../common/types";
+import { IUserLogin, IUserLogout, UserActionType } from "./types";
 
 //User Login
 export const LoginSuccess = (user: IUser): IUserLogin => ({

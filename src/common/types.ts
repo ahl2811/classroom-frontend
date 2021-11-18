@@ -1,9 +1,10 @@
 export interface IUser {
   name?: string;
-  email: string;
+  email?: string;
   avatar?: string;
-  token?: string;
+  accessToken?: string;
   password?: string;
+  id?: string;
 }
 
 export interface IRoom {
@@ -20,19 +21,30 @@ export interface LocationState {
   };
 }
 
-export interface IResponse {
+export interface IErrorResponse {
+  response: {
+    data: {
+      statusCode?: number;
+      error?: string;
+      message?: string;
+    };
+  };
+}
+
+interface IError {
+  statusCode?: number;
   error?: string;
   message?: string;
 }
 
-export interface IUserResponse extends IResponse {
-  user?: IUser;
+export interface ILoginResponse {
+  user: IUser;
 }
 
-export interface IRoomResponse extends IResponse {
+export interface IRoomResponse extends IError {
   room?: IRoom;
 }
 
-export interface IRoomsResponse extends IResponse {
+export interface IRoomsResponse extends IError {
   rooms?: IRoom[];
 }

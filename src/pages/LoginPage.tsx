@@ -1,28 +1,30 @@
-import React, { FormEvent, useContext, useEffect, useState } from 'react';
-import { Alert, Button, Form, Row, Spinner } from 'react-bootstrap';
-import { useMutation } from 'react-query';
-import { useHistory, useLocation } from 'react-router';
-import { Link } from 'react-router-dom';
-import { login } from '../api/user';
-import { USER } from '../common/constants';
-import { LocationState } from '../common/types';
+import React, { FormEvent, useContext, useEffect, useState } from "react";
+import { Button, Form, Row, Spinner, Stack } from "react-bootstrap";
+import { useMutation } from "react-query";
+import { useHistory, useLocation } from "react-router";
+import { Link } from "react-router-dom";
+import { toast, ToastContainer } from "react-toastify";
+import { login } from "../api/user";
+import { USER } from "../common/constants";
+import { IErrorResponse, LocationState } from "../common/types";
+import GoogleLoginButton from "../components/GoogleLoginButton";
 import {
   GradientBackground,
   StyledContainer,
-} from '../components/styled/CommonStyle';
-import { LoginSuccess } from '../store/actions';
-import { store } from '../store/store';
+} from "../components/styled/CommonStyle";
+import { LoginSuccess } from "../store/actions";
+import { store } from "../store/store";
 
 const LoginPage = () => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const {
     state: { user },
     dispatch,
   } = useContext(store);
   const history = useHistory();
   const location = useLocation<LocationState>();
-  let { from } = location.state || { from: { pathname: '/' } };
+  let { from } = location.state || { from: { pathname: "/" } };
 
   useEffect(() => {
     if (user) {
@@ -31,75 +33,100 @@ const LoginPage = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user]);
 
-  const {
-    isLoading: loading,
-    data,
-    mutateAsync: Login,
-  } = useMutation(USER.LOGIN, login);
+  const { isLoading: loading, mutateAsync: Login } = useMutation(
+    USER.LOGIN,
+    login,
+    {
+      onSuccess: (response) => {
+        const user = {
+          ...response.data,
+          avatar: `https://ui-avatars.com/api/?name=${response.data.name}&background=0D8ABC&color=fff`,
+        };
+        dispatch(LoginSuccess(user));
+      },
+      onError: (err: IErrorResponse) => {
+        console.log(err);
+        // if (!err.response?.data) return;
+        // const { message } = err.response.data;
+        // if (message) {
+        //   toast.error(message, {
+        //     position: "top-center",
+        //     autoClose: 3000,
+        //   });
+        // }
+        toast.error("Error");
+      },
+    }
+  );
 
   const handleLogin = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const res = await Login({ email, password });
-    if (res.user) {
-      dispatch(LoginSuccess(res.user));
-    }
+    Login({ email, password });
   };
 
   return (
-    <GradientBackground>
-      <StyledContainer className="border rounded-3 px-4 py-5 position-absolute top-50 start-50 translate-middle shadow bg-body">
-        <Row className="text-center mb-1">
-          <h2>Đăng nhập</h2>
-        </Row>
-        <Row className="px-2">
-          {data?.error && <Alert variant="danger">{data?.error}</Alert>}
-        </Row>
-        <Row>
-          <Form onSubmit={(e) => handleLogin(e)}>
-            <Form.Group className="mb-3" controlId="formBasicEmail">
-              <Form.Label>Email</Form.Label>
-              <Form.Control
-                type="email"
-                placeholder="nguyenvana@gmail.com"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-              />
-            </Form.Group>
+    <GradientBackground className="d-flex align-items-center">
+      <ToastContainer />
+      <StyledContainer className="border rounded-3 px-4 py-5 shadow bg-body d-flex">
+        <Stack>
+          <Row className="text-center mb-1 text-primary">
+            <h2>Login</h2>
+          </Row>
+          <Row>
+            <Form onSubmit={(e) => handleLogin(e)}>
+              <Form.Group className="mb-3" controlId="formBasicEmail">
+                <Form.Label>Email</Form.Label>
+                <Form.Control
+                  type="email"
+                  placeholder="example@gmail.com"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
+                />
+              </Form.Group>
 
-            <Form.Group className="mb-3" controlId="formBasicPassword">
-              <Form.Label>Mật khẩu</Form.Label>
-              <Form.Control
-                type="password"
-                placeholder="Nhập mật khẩu"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-              />
-            </Form.Group>
-            <Form.Group className="mb-3" controlId="formBasicCheckbox">
-              <Link to="/register">Đăng ký tài khoản mới?</Link>
-            </Form.Group>
-            <Row className="d-grid gap-2 col-6 mx-auto mt-4">
-              <Button variant="primary" type="submit" disabled={loading}>
-                {loading ? (
-                  <>
-                    <Spinner
-                      as="span"
-                      animation="border"
-                      size="sm"
-                      role="status"
-                      aria-hidden="true"
-                    />
-                    Vui lòng chờ...
-                  </>
-                ) : (
-                  <>Đăng nhập</>
-                )}
-              </Button>
-            </Row>
-          </Form>
-        </Row>
+              <Form.Group className="mb-3" controlId="formBasicPassword">
+                <Form.Label>Password</Form.Label>
+                <Form.Control
+                  type="password"
+                  placeholder="Input your password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                />
+              </Form.Group>
+
+              <Form.Group>
+                <Button
+                  variant="primary"
+                  type="submit"
+                  disabled={loading}
+                  className="w-100 mt-3 mb-2"
+                >
+                  {loading ? (
+                    <>
+                      <Spinner
+                        as="span"
+                        animation="border"
+                        size="sm"
+                        role="status"
+                        aria-hidden="true"
+                      />
+                      Please wait...
+                    </>
+                  ) : (
+                    <>Sign In</>
+                  )}
+                </Button>
+                <Form.Label>Or you can</Form.Label>
+                <GoogleLoginButton />
+              </Form.Group>
+              <Form.Group className="mt-3 text-center">
+                Don't have account yet? <Link to="/register">Register now</Link>
+              </Form.Group>
+            </Form>
+          </Row>
+        </Stack>
       </StyledContainer>
     </GradientBackground>
   );

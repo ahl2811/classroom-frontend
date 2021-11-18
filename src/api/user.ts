@@ -1,15 +1,10 @@
-import { IUser, IUserResponse } from '../common/types';
-import { request } from '../common/utils';
+import { IUser } from "../common/types";
+import { request } from "../common/utils";
 
 export const login = async (userInfo: IUser) => {
-  const { data } = await request.post<IUserResponse>('/users/login', userInfo);
-  return data;
+  return await request.post<IUser>("/auth/signin", userInfo);
 };
 
 export const register = async (userInfo: IUser) => {
-  const { data } = await request.post<IUserResponse>(
-    '/users/register',
-    userInfo
-  );
-  return data;
+  return await request.post("/auth/signup", userInfo);
 };
