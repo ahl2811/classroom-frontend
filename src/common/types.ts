@@ -8,17 +8,24 @@ export interface IUser {
 }
 
 export interface IRoom {
+  id?: string;
   name: string;
   code?: string;
-  owner?: IUser;
   description?: string;
-  members?: IUser[];
+  section?: string;
+  subject?: string;
 }
 
 export interface LocationState {
   from: {
     pathname: string;
   };
+  search: string;
+}
+
+export interface ILoginResponse {
+  user: IUser;
+  accessToken: string;
 }
 
 export interface IErrorResponse {
@@ -31,20 +38,12 @@ export interface IErrorResponse {
   };
 }
 
-interface IError {
-  statusCode?: number;
-  error?: string;
-  message?: string;
+export interface IRoomMembersRespone {
+  teachers: IUser[];
+  students: IUser[];
 }
 
-export interface ILoginResponse {
-  user: IUser;
-}
-
-export interface IRoomResponse extends IError {
-  room?: IRoom;
-}
-
-export interface IRoomsResponse extends IError {
-  rooms?: IRoom[];
-}
+export type IRoomsResponse = {
+  owner: IUser;
+  classroom: IRoom;
+}[];

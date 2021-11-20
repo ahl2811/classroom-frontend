@@ -11,4 +11,7 @@ export const USER = {
 export const ROOM = {
   GET: "room/get",
   CREATE: "room/create",
+  DETAIL: "room/detail",
+  MEMBERS: "room/members",
+  JOIN: "room/join",
 };

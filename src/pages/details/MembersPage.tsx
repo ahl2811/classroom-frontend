@@ -1,24 +1,38 @@
-import React from "react";
+import React, { useState } from "react";
 import { Stack } from "react-bootstrap";
-import { IUser } from "../../common/types";
+import { useQuery } from "react-query";
+import { useParams } from "react-router";
+import { getRoomMembers } from "../../api/room";
+import { ROOM } from "../../common/constants";
+import { IErrorResponse, IRoomMembersRespone } from "../../common/types";
+import DisplayByStatus from "../../components/DisplayByStatus";
 import MemberList from "../../components/MemberList";
 
-const members: IUser[] = [
-  { id: "1", name: "hao 1" },
-  { id: "2", name: "Hao 2" },
-  { id: "3", name: "hao 3" },
-  { id: "4", name: "Hao 4" },
-  { id: "5", name: "hao 5" },
-  { id: "6", name: "Hao 6" },
-];
-
-const teachers: IUser[] = [{ id: "1", name: "Teacher 1" }];
-
 const MembersPage = () => {
+  const [memList, setMemList] = useState<IRoomMembersRespone>();
+  const { id } = useParams<{ id: string }>();
+
+  const { isLoading, error } = useQuery<IRoomMembersRespone, IErrorResponse>(
+    ROOM.MEMBERS,
+    () => getRoomMembers(`${id}`),
+    {
+      onSuccess: (response) => {
+        setMemList(response);
+      },
+    }
+  );
+
+  const teachers = memList?.teachers || [];
+  const students = memList?.students || [];
+
+  if (error || isLoading) {
+    return <DisplayByStatus error={error} isLoading={isLoading} />;
+  }
+
   return (
     <Stack>
       <MemberList title="Teachers" members={teachers} />
-      <MemberList title="Students" members={members} memCount={true} />
+      <MemberList title="Students" members={students} memCount={true} />
     </Stack>
   );
 };

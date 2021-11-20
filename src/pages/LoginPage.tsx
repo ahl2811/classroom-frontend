@@ -1,4 +1,4 @@
-import React, { FormEvent, useContext, useEffect, useState } from "react";
+import React, { FormEvent, useEffect, useState } from "react";
 import { Button, Form, Row, Spinner, Stack } from "react-bootstrap";
 import { useMutation } from "react-query";
 import { useHistory, useLocation } from "react-router";
@@ -6,55 +6,51 @@ import { Link } from "react-router-dom";
 import { toast, ToastContainer } from "react-toastify";
 import { login } from "../api/user";
 import { USER } from "../common/constants";
-import { IErrorResponse, LocationState } from "../common/types";
+import { IErrorResponse, IUser, LocationState } from "../common/types";
+import { toastError } from "../common/utils";
 import GoogleLoginButton from "../components/GoogleLoginButton";
 import {
   GradientBackground,
-  StyledContainer,
+  LoginContainer,
 } from "../components/styled/CommonStyle";
+import useUserContext from "../hooks/useUserContext";
 import { LoginSuccess } from "../store/actions";
-import { store } from "../store/store";
 
 const LoginPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const {
-    state: { user },
-    dispatch,
-  } = useContext(store);
+  const { user, dispatch } = useUserContext();
   const history = useHistory();
   const location = useLocation<LocationState>();
   let { from } = location.state || { from: { pathname: "/" } };
+  const { search } = location;
+
+  if (user) {
+    history.replace(from);
+  }
 
   useEffect(() => {
-    if (user) {
-      history.replace(from);
+    if (search) {
+      const params = new URLSearchParams(search);
+      toast.error(`${params.get("message")}`, { position: "top-center" });
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user]);
+  }, [search]);
 
   const { isLoading: loading, mutateAsync: Login } = useMutation(
     USER.LOGIN,
     login,
     {
       onSuccess: (response) => {
-        const user = {
-          ...response.data,
-          avatar: `https://ui-avatars.com/api/?name=${response.data.name}&background=0D8ABC&color=fff`,
+        const { user: userRes, accessToken } = response.data;
+        const userInfo: IUser = {
+          ...userRes,
+          avatar: `https://ui-avatars.com/api/?name=${userRes.name}&background=0D8ABC&color=fff`,
+          accessToken,
         };
-        dispatch(LoginSuccess(user));
+        dispatch(LoginSuccess(userInfo));
       },
       onError: (err: IErrorResponse) => {
-        console.log(err);
-        // if (!err.response?.data) return;
-        // const { message } = err.response.data;
-        // if (message) {
-        //   toast.error(message, {
-        //     position: "top-center",
-        //     autoClose: 3000,
-        //   });
-        // }
-        toast.error("Error");
+        toastError(err);
       },
     }
   );
@@ -67,7 +63,7 @@ const LoginPage = () => {
   return (
     <GradientBackground className="d-flex align-items-center">
       <ToastContainer />
-      <StyledContainer className="border rounded-3 px-4 py-5 shadow bg-body d-flex">
+      <LoginContainer className="border rounded-3 px-4 py-5 shadow bg-body d-flex">
         <Stack>
           <Row className="text-center mb-1 text-primary">
             <h2>Login</h2>
@@ -101,7 +97,7 @@ const LoginPage = () => {
                   variant="primary"
                   type="submit"
                   disabled={loading}
-                  className="w-100 mt-3 mb-2"
+                  className="w-100 mt-3 mb-2 classroom-btn"
                 >
                   {loading ? (
                     <>
@@ -127,7 +123,7 @@ const LoginPage = () => {
             </Form>
           </Row>
         </Stack>
-      </StyledContainer>
+      </LoginContainer>
     </GradientBackground>
   );
 };

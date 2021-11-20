@@ -42,4 +42,15 @@ export const PostNotifyCard = styled(Card)`
   .avatar {
     width: 72px;
   }
+
+  .notify-intro {
+    font-size: 14px;
+    color: #555;
+  }
+
+  &:hover {
+    .notify-intro {
+      color: teal;
+    }
+  }
 `;

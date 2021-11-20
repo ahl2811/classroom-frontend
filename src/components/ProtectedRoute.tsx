@@ -1,16 +1,11 @@
-import { useContext } from 'react';
-import { Redirect, Route, RouteProps } from 'react-router';
-import { store } from '../store/store';
+import { Redirect, Route, RouteProps } from "react-router";
+import useUserContext from "../hooks/useUserContext";
 
 export default function ProtectedRoute({
   children,
   ...routeProps
 }: RouteProps) {
-  const {
-    state: {
-     user
-    },
-  } = useContext(store);
+  const { user } = useUserContext();
   return (
     <Route
       {...routeProps}
@@ -20,7 +15,7 @@ export default function ProtectedRoute({
         ) : (
           <Redirect
             to={{
-              pathname: '/login',
+              pathname: "/login",
               state: { from: location },
             }}
           />

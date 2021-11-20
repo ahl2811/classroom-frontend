@@ -1,20 +1,42 @@
-import React from "react";
+import React, { ReactNode, useState } from "react";
 import { Image } from "react-bootstrap";
 import { IUser } from "../common/types";
-import { MembersListStyle } from "./styled/CommonStyle";
+import ModalInviteMembers from "./modals/ModalInviteMembers";
+import { IconButtonStyle, MembersListStyle } from "./styled/CommonStyle";
 
 interface IProps {
   title: string;
   members: IUser[];
   memCount?: boolean;
+  modal?: ReactNode;
 }
 
 const MemberList = ({ title, members, memCount = false }: IProps) => {
+  const [showModal, setShowModal] = useState(false);
   return (
     <MembersListStyle>
-      <div className="d-flex flex-row justify-content-between member-title align-items-end mb-3">
-        <div className=" text-capitalize">{title}</div>
-        {memCount && <div className="fs-6 mb-2">{members.length} members</div>}
+      <div className="d-flex flex-row justify-content-between member-title align-items-start mb-3">
+        <div className=" text-capitalize member-type">{title}</div>
+        <div className="fs-6 mb-2 d-flex flex-row align-items-center">
+          <>
+            {memCount && (
+              <div className="text-truncate member-count">
+                {members.length} members
+              </div>
+            )}
+            <IconButtonStyle
+              className="ms-3 d-flex member-add ps-2"
+              onClick={() => setShowModal(true)}
+            >
+              <i className="bi bi-person-plus-fill"></i>
+            </IconButtonStyle>
+            <ModalInviteMembers
+              show={showModal}
+              onHide={() => setShowModal(false)}
+              centered
+            />
+          </>
+        </div>
       </div>
       {members.map((member) => (
         <div
@@ -25,7 +47,7 @@ const MemberList = ({ title, members, memCount = false }: IProps) => {
             <Image
               src={
                 member.avatar ||
-                "https://ui-avatars.com/api/?background=0D8ABC&color=fff"
+                `https://ui-avatars.com/api/?name=${member.name}&background=0D8ABC&color=fff`
               }
               roundedCircle
               height={32}

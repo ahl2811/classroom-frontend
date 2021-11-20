@@ -1,7 +1,8 @@
 import axios from "axios";
 import { GoogleLoginResponse } from "react-google-login";
+import { toast } from "react-toastify";
 import { SERVER_URL } from "./constants";
-import { IUser } from "./types";
+import { IErrorResponse, IUser } from "./types";
 
 export const getToken = () => {
   const user: IUser = localStorage.getItem("user")
@@ -11,7 +12,6 @@ export const getToken = () => {
 };
 
 export const getAuthorization = () => {
-  console.log("Token", getToken());
   const headers = {
     "Content-Type": "application/json",
     Authorization: "Bearer " + getToken(),
@@ -34,4 +34,26 @@ export const refreshTokenGoogle = (res: GoogleLoginResponse) => {
   };
 
   setTimeout(refreshToken, refreshTiming);
+};
+
+export const toastError = (
+  error: IErrorResponse,
+  altMessage: string = "Something were wrong!"
+) => {
+  console.log(error);
+  if (!error.response?.data?.message) {
+    toast.error(altMessage);
+    return;
+  }
+  const { message } = error.response.data;
+  toast.error(`${message}`, {
+    position: "top-center",
+    autoClose: 3000,
+  });
+};
+
+export const getRandomImageLink = () => {
+  const colors = ["008080", "006666", "004c4c"];
+  const index = Math.floor(Math.random() * colors.length);
+  return `https://www.colorbook.io/imagecreator.php?hex=${colors[index]}&width=300&height=100`;
 };

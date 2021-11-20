@@ -9,13 +9,21 @@ import "./App.css";
 import ProtectedRoute from "./components/ProtectedRoute";
 import RoomDetailsPage from "./pages/details";
 import ErrorPage from "./pages/ErrorPage";
+import JoinClassPage from "./pages/JoinClassPage";
 import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
 import RoomsPage from "./pages/RoomsPage";
 import { AppProvider } from "./store/store";
 
 function App() {
-  const queryClient = new QueryClient();
+  const queryClient = new QueryClient({
+    defaultOptions: {
+      queries: {
+        refetchOnWindowFocus: false,
+        retry: 1,
+      },
+    },
+  });
   return (
     <QueryClientProvider client={queryClient}>
       <AppProvider>
@@ -26,10 +34,12 @@ function App() {
             </ProtectedRoute>
             <Route path="/login" component={LoginPage} />
             <Route path="/register" component={RegisterPage} />
-            {/* <ProtectedRoute path="/:id">
-                <RoomDetailsPage />
-              </ProtectedRoute> */}
-            <Route path="/classrooms/:id" component={RoomDetailsPage} />
+            <ProtectedRoute path="/classrooms/:id/join">
+              <JoinClassPage />
+            </ProtectedRoute>
+            <ProtectedRoute path="/classrooms/:id">
+              <RoomDetailsPage />
+            </ProtectedRoute>
             <Route path="*" component={ErrorPage} />
           </Switch>
         </Router>

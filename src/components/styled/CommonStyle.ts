@@ -6,6 +6,11 @@ export const StyledHeader = styled(Navbar)`
   min-height: 64px;
   padding: 0;
 
+  .nav-link {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+
   .nav-link.active {
     font-weight: 500;
     color: teal !important;
@@ -40,9 +45,9 @@ export const StyledHeader = styled(Navbar)`
   }
 `;
 
-export const StyledContainer = styled(Container)`
-  max-width: 600px;
-  @media (max-width: 620px) {
+export const LoginContainer = styled(Container)`
+  max-width: 480px;
+  @media (max-width: 500px) {
     max-width: 95%;
   }
 `;
@@ -50,7 +55,13 @@ export const StyledContainer = styled(Container)`
 export const GradientBackground = styled.div`
   width: 100vw;
   min-height: 100vh;
-  background: linear-gradient(45deg, #239fe9, #44d5f3);
+`;
+
+export const RoomsPageStyle = styled(Container)`
+  padding: 20px;
+  @media screen and (max-width: 375px) {
+    padding: 20px 12px;
+  }
 `;
 
 export const RoomDetailsStyle = styled(Container)`
@@ -96,6 +107,22 @@ export const MembersListStyle = styled(Container)`
     border-bottom: solid 1px teal;
     padding: 0 16px 8px;
     margin: 8px 0;
+
+    @media screen and (max-width: 375px) {
+      padding: 0 4px 8px;
+
+      .member-type {
+        font-size: 28px;
+      }
+
+      .member-count {
+        font-size: 14px;
+      }
+
+      .member-add {
+        margin-left: 8px !important;
+      }
+    }
   }
 
   .member-person {
@@ -113,5 +140,53 @@ export const MembersListStyle = styled(Container)`
   .avatar {
     width: 52px;
     height: 100%;
+  }
+`;
+
+export const JoinClassPageStyle = styled(Container)`
+  padding: 28px 20px;
+
+  .join-class-container {
+    max-width: 760px;
+    padding: 0;
+    border: solid 1px #ccc;
+    border-radius: 8px;
+    margin: 0 auto;
+  }
+
+  .join-class-banner {
+    border-radius: 8px 8px 0 0;
+    background-color: #eee;
+    text-align: center;
+    padding: 20px;
+  }
+
+  .join-class-footer {
+    font-size: 14px;
+  }
+
+  @media screen and (max-width: 375px) {
+    padding: 16px 12px;
+  }
+`;
+
+export const IconButtonStyle = styled.button`
+  width: 40px;
+  height: 40px;
+  border-radius: 100%;
+
+  text-align: center;
+  cursor: pointer;
+  border: 0;
+  background: transparent;
+  color: teal;
+  font-size: 24px;
+  text-align: center;
+
+  &:hover {
+    background: rgba(0, 0, 0, 0.05);
+  }
+  &:active {
+    background: rgba(0, 0, 0, 0.1);
   }
 `;

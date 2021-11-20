@@ -1,28 +1,50 @@
-import React from "react";
-import { Button, Card, Col, Container, Row } from "react-bootstrap";
+import React, { useContext, useState } from "react";
+import { Button, Card, Col, Row } from "react-bootstrap";
 import { useQuery } from "react-query";
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 import { getRooms } from "../api/room";
 import { ROOM } from "../common/constants";
+import { IErrorResponse, IRoomsResponse } from "../common/types";
+import { getRandomImageLink } from "../common/utils";
 import Header from "../components/Header";
 import Options from "../components/Options";
+import { RoomsPageStyle } from "../components/styled/CommonStyle";
 import { OptionItem } from "../components/styled/OptionStyle";
 import { RoomCard } from "../components/styled/RoomStyle";
+import { Logout } from "../store/actions";
+import { store } from "../store/store";
 
 export default function RoomsPage() {
-  const { isLoading, data } = useQuery(ROOM.GET, getRooms);
+  const [rooms, setRooms] = useState<IRoomsResponse>([]);
+  const { dispatch } = useContext(store);
+  const history = useHistory();
+  const { isLoading } = useQuery<IRoomsResponse, IErrorResponse>(
+    ROOM.GET,
+    getRooms,
+    {
+      onSuccess: (data) => {
+        setRooms(data);
+      },
+      onError: () => {
+        dispatch(Logout());
+        history.push(
+          "/login?message=Your session was expired. Please login again!"
+        );
+      },
+    }
+  );
 
   return (
     <>
-      <Header />
+      <Header isHome={true} />
       {isLoading ? (
         <div className="p-2">Loading...</div>
       ) : (
-        <Container fluid>
-          {data?.rooms && data?.rooms.length > 0 ? (
-            <Row className="gx-4 gt-4 p-4">
-              {data?.rooms.map((room) => (
-                <Col key={room.code} lg={3} md={4} sm={6} xs={12}>
+        <RoomsPageStyle fluid>
+          {rooms.length > 0 ? (
+            <Row className="gx-4 gt-4">
+              {rooms.map((room) => (
+                <Col key={room.classroom.id} lg={3} md={4} sm={6} xs={12}>
                   <RoomCard className="mr-2 mb-4">
                     <Options
                       icon={
@@ -32,14 +54,11 @@ export default function RoomsPage() {
                     >
                       <OptionItem>Hủy đăng ký</OptionItem>
                     </Options>
-                    <Card.Img
-                      variant="top"
-                      src="https://picsum.photos/300/100"
-                    />
+                    <Card.Img variant="top" src={getRandomImageLink()} />
                     <div className="position-absolute mt-4 ms-3 title text-white">
-                      <Link to={`/${room.code}`}>
+                      <Link to={`/classrooms/${room.classroom.id}`}>
                         <Card.Title className="text-truncate text-white link">
-                          {room.name}
+                          {room.classroom.name}
                         </Card.Title>
                       </Link>
                       <Card.Subtitle className="owner">
@@ -48,11 +67,13 @@ export default function RoomsPage() {
                     </div>
                     <Card.Body className="body">
                       <Card.Text className="text-truncate">
-                        {room.description}
+                        {room.classroom.description}
                       </Card.Text>
                     </Card.Body>
                     <Card.Body className="text-end border-top">
-                      <Button variant="dark">Xem chi tiết</Button>
+                      <Link to={`/classrooms/${room.classroom.id}`}>
+                        <Button variant="light">Xem chi tiết</Button>
+                      </Link>
                     </Card.Body>
                   </RoomCard>
                 </Col>
@@ -63,7 +84,7 @@ export default function RoomsPage() {
               Chưa có lớp học
             </div>
           )}
-        </Container>
+        </RoomsPageStyle>
       )}
     </>
   );

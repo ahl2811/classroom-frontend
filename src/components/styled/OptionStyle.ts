@@ -12,8 +12,8 @@ export const StyledOptions = styled.div<{
 
   ${({ isActive }) =>
     isActive
-      ? "background: rgba(0, 0, 0, 0.15);"
-      : "&:hover {background: rgba(0, 0, 0, 0.1); .blur-hover{opacity: 0.85}}"};
+      ? "background: rgba(0, 0, 0, 0.1);"
+      : "&:hover {background: rgba(0, 0, 0, 0.05); .blur-hover{opacity: 0.85}}"};
 
   .icon {
     border-radius: 50%;

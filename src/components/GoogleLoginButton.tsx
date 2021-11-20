@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React from "react";
 import GoogleLogin, {
   GoogleLoginResponse,
   GoogleLoginResponseOffline,
@@ -6,11 +6,11 @@ import GoogleLogin, {
 import { GOOGLE_CLIENT_ID } from "../common/constants";
 import { ILoginResponse } from "../common/types";
 import { request } from "../common/utils";
+import useUserContext from "../hooks/useUserContext";
 import { LoginSuccess } from "../store/actions";
-import { store } from "../store/store";
 
 const GoogleLoginButton = () => {
-  const { dispatch } = useContext(store);
+  const { dispatch } = useUserContext();
 
   const handleLoginGoogleSuccess = async (
     response: GoogleLoginResponse | GoogleLoginResponseOffline

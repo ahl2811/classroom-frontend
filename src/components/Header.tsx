@@ -1,16 +1,9 @@
-import React, { ReactNode, useContext, useState } from "react";
-import {
-  Container,
-  Dropdown,
-  Image,
-  Nav,
-  Navbar,
-  Offcanvas,
-} from "react-bootstrap";
+import React, { ReactNode, useState } from "react";
+import { Container, Image, Nav, Navbar, Offcanvas } from "react-bootstrap";
 import { Link } from "react-router-dom";
+import useUserContext from "../hooks/useUserContext";
 import { Logout } from "../store/actions";
-import { store } from "../store/store";
-import RoomCreation from "./modals/RoomCreation";
+import ModalCreateRoom from "./modals/ModalCreateRoom";
 import Options from "./Options";
 import { StyledHeader } from "./styled/CommonStyle";
 import { OptionItem } from "./styled/OptionStyle";
@@ -18,15 +11,14 @@ import { OptionItem } from "./styled/OptionStyle";
 interface IHeader {
   roomDetailsNav?: ReactNode;
   title?: string;
+  isHome?: boolean;
 }
 export default function Header({
   roomDetailsNav,
   title = "Classroom",
+  isHome = false,
 }: IHeader) {
-  const {
-    state: { user },
-    dispatch,
-  } = useContext(store);
+  const { user, dispatch } = useUserContext();
   const [showRoomCreation, setShowRoomCreation] = useState(false);
 
   const handleLogout = () => {
@@ -50,21 +42,27 @@ export default function Header({
         <Nav className="justify-content-end order-2 order-md-last flex-nowrap flex-row">
           <Nav.Item>
             {!roomDetailsNav ? (
-              <Dropdown align="end">
-                <Dropdown.Toggle variant="success">Add class</Dropdown.Toggle>
-                <Dropdown.Menu className="position-absolute">
-                  <Dropdown.Item>Join a class</Dropdown.Item>
-                  <Dropdown.Item onClick={() => setShowRoomCreation(true)}>
-                    Create new class
-                  </Dropdown.Item>
-                </Dropdown.Menu>
-              </Dropdown>
+              <>
+                {isHome && (
+                  <Options
+                    icon={
+                      <i className="bi bi-plus-circle-dotted icon fs-5 fw-bold" />
+                    }
+                    className="position-relative"
+                  >
+                    <OptionItem>Join a class</OptionItem>
+                    <OptionItem onClick={() => setShowRoomCreation(true)}>
+                      Create new class
+                    </OptionItem>
+                  </Options>
+                )}
+              </>
             ) : (
               <Options
                 icon={<i className="bi bi-gear icon fs-5 fw-bold" />}
                 className="position-relative"
               >
-                <OptionItem onClick={handleLogout}>Cài đặt</OptionItem>
+                <OptionItem onClick={handleLogout}>Settings</OptionItem>
               </Options>
             )}
           </Nav.Item>
@@ -104,7 +102,7 @@ export default function Header({
           </Navbar.Offcanvas>
         </Nav>
       </Container>
-      <RoomCreation
+      <ModalCreateRoom
         show={showRoomCreation}
         onHide={() => setShowRoomCreation(false)}
         centered

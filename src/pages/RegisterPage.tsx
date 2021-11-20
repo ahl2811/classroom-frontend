@@ -1,4 +1,4 @@
-import React, { FormEvent, useContext, useEffect, useState } from "react";
+import React, { FormEvent, useState } from "react";
 import { Button, Form, Row, Spinner, Stack } from "react-bootstrap";
 import { useMutation } from "react-query";
 import { useHistory, useLocation } from "react-router";
@@ -7,30 +7,26 @@ import { toast, ToastContainer } from "react-toastify";
 import { register } from "../api/user";
 import { USER } from "../common/constants";
 import { IErrorResponse, LocationState } from "../common/types";
+import { toastError } from "../common/utils";
 import {
   GradientBackground,
-  StyledContainer,
+  LoginContainer,
 } from "../components/styled/CommonStyle";
-import { store } from "../store/store";
+import useUserContext from "../hooks/useUserContext";
 
 const RegisterPage = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const {
-    state: { user },
-  } = useContext(store);
+  const { user } = useUserContext();
   const history = useHistory();
   const location = useLocation<LocationState>();
   let { from } = location.state || { from: { pathname: "/" } };
 
-  useEffect(() => {
-    if (user) {
-      history.replace(from);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user]);
+  if (user) {
+    history.replace(from);
+  }
 
   const { isLoading: loading, mutateAsync: Register } = useMutation(
     USER.REGISTER,
@@ -46,21 +42,22 @@ const RegisterPage = () => {
         }, 2000);
       },
       onError: (err: IErrorResponse) => {
-        const { message } = err.response.data;
-        if (message) {
-          toast.error(`${message}`, {
-            position: "top-center",
-            autoClose: 3000,
-          });
-        }
+        toastError(err);
       },
     }
   );
 
   const handleRegister = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    const testPwd = /((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$/;
+    if (!testPwd.test(password)) {
+      alert(
+        "Password must have at least one uppercase letter, one lowercase letter, and one number"
+      );
+      return;
+    }
     if (password !== confirmPassword) {
-      alert("Mật khẩu xác nhận không đúng");
+      alert("Confirm password does not match.");
       return;
     }
     Register({ email, name, password });
@@ -69,7 +66,7 @@ const RegisterPage = () => {
   return (
     <GradientBackground className="d-flex align-items-center">
       <ToastContainer />
-      <StyledContainer className="border rounded-3 px-4 py-5 shadow bg-body d-flex">
+      <LoginContainer className="border rounded-3 px-4 py-5 shadow bg-body d-flex">
         <Stack>
           <Row className="text-center mb-1 text-primary">
             <h2>Register</h2>
@@ -106,6 +103,8 @@ const RegisterPage = () => {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
+                  minLength={8}
+                  maxLength={32}
                 />
               </Form.Group>
               <Form.Group className="mb-3" controlId="formBasicConfirmPassword">
@@ -122,7 +121,12 @@ const RegisterPage = () => {
                 <Link to="/login">{"<<"} Back to Login page</Link>
               </Form.Group>
               <Row className="d-grid gap-2 col-6 mx-auto mt-4">
-                <Button variant="primary" type="submit" disabled={loading}>
+                <Button
+                  variant="primary"
+                  type="submit"
+                  disabled={loading}
+                  className="classroom-btn"
+                >
                   {loading ? (
                     <>
                       <Spinner
@@ -142,7 +146,7 @@ const RegisterPage = () => {
             </Form>
           </Row>
         </Stack>
-      </StyledContainer>
+      </LoginContainer>
     </GradientBackground>
   );
 };

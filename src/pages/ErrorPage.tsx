@@ -1,10 +1,12 @@
 import React, { ReactNode } from "react";
 import { Link } from "react-router-dom";
+
 interface IProps {
   statusCode?: number;
   title?: string;
   children?: ReactNode;
 }
+
 const ErrorPage = ({
   statusCode = 404,
   title = "Page Not Found!",
