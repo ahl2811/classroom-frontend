@@ -11,6 +11,7 @@ import RoomDetailsPage from "./pages/details";
 import ErrorPage from "./pages/ErrorPage";
 import JoinClassPage from "./pages/JoinClassPage";
 import LoginPage from "./pages/LoginPage";
+import ProfilePage from "./pages/ProfilePage";
 import RegisterPage from "./pages/RegisterPage";
 import RoomsPage from "./pages/RoomsPage";
 import { AppProvider } from "./store/store";
@@ -39,6 +40,9 @@ function App() {
             </ProtectedRoute>
             <ProtectedRoute path="/classrooms/:id">
               <RoomDetailsPage />
+            </ProtectedRoute>
+            <ProtectedRoute path="/user/profile">
+              <ProfilePage />
             </ProtectedRoute>
             <Route path="*" component={ErrorPage} />
           </Switch>

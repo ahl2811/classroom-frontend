@@ -41,11 +41,12 @@ const NewsPage = () => {
   if (error || isLoading) {
     return <DisplayByStatus error={error} isLoading={isLoading} />;
   }
+
   return (
     <>
       <Row className="d-flex align-items-end rounded justify-content-between flex-column g-0 banner notify-item">
-        {isTeacher && (
-          <div className="d-flex flex-row justify-content-end">
+        <div className="d-flex flex-row justify-content-end">
+          {isTeacher && (
             <DropdownButton
               variant="light"
               title="Customize"
@@ -54,8 +55,8 @@ const NewsPage = () => {
             >
               <Dropdown.Item>Change background</Dropdown.Item>
             </DropdownButton>
-          </div>
-        )}
+          )}
+        </div>
 
         <div className="text-white p-3">
           <h1 className="class-name">{data?.classroom.name}</h1>

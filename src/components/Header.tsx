@@ -74,9 +74,12 @@ export default function Header({
               className="position-relative user mx-2"
               menuCenter={true}
             >
-              <OptionItem>
-                <i className="bi bi-person-lines-fill fs-5 me-3" /> View profile
-              </OptionItem>
+              <Link to="/user/profile" className="link-item">
+                <OptionItem>
+                  <i className="bi bi-person-lines-fill fs-5 me-3" /> View
+                  profile
+                </OptionItem>
+              </Link>
               <OptionItem onClick={handleLogout}>
                 <i className="bi bi-box-arrow-right fs-5 me-3" /> Sign out
               </OptionItem>

@@ -72,7 +72,7 @@ const ModalInviteMembers = ({ role = "student", roomId, ...props }: IProps) => {
           <Button variant="light" onClick={props.onHide}>
             Cancel
           </Button>
-          <Button variant="success" type="submit" disabled={isLoading}>
+          <Button variant="primary" type="submit" disabled={isLoading}>
             {isLoading ? (
               <>
                 <Spinner

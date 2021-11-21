@@ -19,6 +19,10 @@ export const StyledOptions = styled.div<{
     border-radius: 50%;
     overflow: hidden;
   }
+
+  .link-item {
+    color: inherit;
+  }
 `;
 
 export const OptionMenu = styled.div<{ menuCenter?: boolean }>`
