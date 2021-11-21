@@ -31,6 +31,10 @@ export const CodeCard = styled(Card)`
     font-weight: 500;
     letter-spacing: 1px;
   }
+  .notify-deadline {
+    font-size: 14px;
+    color: #ccc;
+  }
 `;
 
 export const PostNotifyCard = styled(Card)`

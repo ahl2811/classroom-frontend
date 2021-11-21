@@ -72,7 +72,7 @@ export default function RoomsPage() {
                     </Card.Body>
                     <Card.Body className="text-end border-top">
                       <Link to={`/classrooms/${room.classroom.id}`}>
-                        <Button variant="light">Xem chi tiết</Button>
+                        <Button variant="light">View details</Button>
                       </Link>
                     </Card.Body>
                   </RoomCard>

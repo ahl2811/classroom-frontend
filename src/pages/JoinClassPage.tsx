@@ -2,10 +2,11 @@ import React from "react";
 import { Button, Image } from "react-bootstrap";
 import { useMutation, useQuery } from "react-query";
 import { useHistory, useLocation, useParams } from "react-router";
+import { toast, ToastContainer } from "react-toastify";
 import { getRoomMembers, joinRoom } from "../api/room";
 import Logo from "../assets/images/logo-classroom.svg";
 import { ROOM } from "../common/constants";
-import { IErrorResponse, IRoomMembersRespone } from "../common/types";
+import { IErrorResponse, IRoomMembersResponse } from "../common/types";
 import Header from "../components/Header";
 import { JoinClassPageStyle } from "../components/styled/CommonStyle";
 
@@ -14,9 +15,10 @@ const JoinClassPage = () => {
   const { id } = useParams<{ id: string }>();
   const history = useHistory();
   const params = new URLSearchParams(search);
-  const code = params.get("code");
+  const code = params.get("code") || "";
+  const role = params.get("role") || "student";
 
-  const { isLoading } = useQuery<IRoomMembersRespone, IErrorResponse>(
+  const { isLoading } = useQuery<IRoomMembersResponse, IErrorResponse>(
     ROOM.MEMBERS,
     () => getRoomMembers(`${id}`),
     {
@@ -29,13 +31,16 @@ const JoinClassPage = () => {
 
   const { isLoading: joinRoomLoading, mutateAsync } = useMutation(
     ROOM.JOIN,
-    () => joinRoom(id, `${code}`),
+    () => joinRoom({ id, role: `${role}`, code: `${code}` }),
     {
       onSuccess: () => {
         history.push(`/classrooms/${id}`);
       },
-      onError: (error) => {
-        console.log(error);
+      onError: () => {
+        toast.error(
+          "Sorry! You don't have a submission to join this classroom",
+          { position: "top-center" }
+        );
       },
     }
   );
@@ -56,6 +61,7 @@ const JoinClassPage = () => {
   return (
     <>
       <Header />
+      <ToastContainer />
       <JoinClassPageStyle>
         <div className="join-class-container">
           <div className="join-class-banner">
@@ -67,7 +73,10 @@ const JoinClassPage = () => {
             </p>
           </div>
           <div className="text-center py-4">
-            <p>You are joining the class as a student.</p>
+            <p>
+              You are joining the class as a{" "}
+              <span className="fw-bold">{role}</span>.
+            </p>
             <Button
               className="classroom-btn"
               onClick={handleJoinClass}

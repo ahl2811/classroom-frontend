@@ -9,9 +9,19 @@ interface IProps {
   members: IUser[];
   memCount?: boolean;
   modal?: ReactNode;
+  role: "student" | "teacher" | "owner";
+  isTeacher: boolean;
+  roomId: string;
 }
 
-const MemberList = ({ title, members, memCount = false }: IProps) => {
+const MemberList = ({
+  title,
+  members,
+  memCount = false,
+  role,
+  roomId,
+  isTeacher,
+}: IProps) => {
   const [showModal, setShowModal] = useState(false);
   return (
     <MembersListStyle>
@@ -24,17 +34,23 @@ const MemberList = ({ title, members, memCount = false }: IProps) => {
                 {members.length} members
               </div>
             )}
-            <IconButtonStyle
-              className="ms-3 d-flex member-add ps-2"
-              onClick={() => setShowModal(true)}
-            >
-              <i className="bi bi-person-plus-fill"></i>
-            </IconButtonStyle>
-            <ModalInviteMembers
-              show={showModal}
-              onHide={() => setShowModal(false)}
-              centered
-            />
+            {isTeacher && (
+              <>
+                <IconButtonStyle
+                  className="ms-3 d-flex member-add ps-2"
+                  onClick={() => setShowModal(true)}
+                >
+                  <i className="bi bi-person-plus-fill"></i>
+                </IconButtonStyle>
+                <ModalInviteMembers
+                  show={showModal}
+                  onHide={() => setShowModal(false)}
+                  centered
+                  roomId={roomId}
+                  role={role}
+                />
+              </>
+            )}
           </>
         </div>
       </div>

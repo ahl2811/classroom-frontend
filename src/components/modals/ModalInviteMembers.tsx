@@ -1,25 +1,61 @@
-import React, { useState } from "react";
+import React, { FormEvent, useState } from "react";
 import {
+  Button,
+  FloatingLabel,
   Form,
   FormControl,
   Modal,
-  Button,
-  Spinner,
-  FloatingLabel,
   ModalProps,
+  Spinner,
 } from "react-bootstrap";
-import { ToastContainer } from "react-toastify";
+import { useMutation } from "react-query";
+import { toast, ToastContainer } from "react-toastify";
+import { inviteByEmail } from "../../api/room";
+import { ROOM } from "../../common/constants";
+import { IErrorResponse } from "../../common/types";
+import { toastError } from "../../common/utils";
+import useUserContext from "../../hooks/useUserContext";
 
-const ModalInviteMembers = (props: ModalProps) => {
+interface IProps extends ModalProps {
+  role: "teacher" | "student" | "owner";
+  roomId: string;
+}
+
+const ModalInviteMembers = ({ role = "student", roomId, ...props }: IProps) => {
   const [email, setEmail] = useState<string>("");
-  const loading = false;
+  const { user } = useUserContext();
+  const { isLoading, mutateAsync } = useMutation<any, IErrorResponse>(
+    ROOM.INVITE_BY_EMAIL,
+    () => inviteByEmail({ email, id: roomId, role }),
+    {
+      onSuccess: () => {
+        setEmail("");
+        toast.success("Invite successfully.", {
+          position: "top-center",
+          autoClose: 3000,
+        });
+      },
+      onError: (error) => {
+        toastError(error);
+      },
+    }
+  );
+
+  const handleInvite = (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (user?.email === email) {
+      toast.error("Cannot invite yourself", { position: "top-center" });
+      return;
+    }
+    mutateAsync();
+  };
 
   return (
     <Modal {...props}>
       <ToastContainer />
-      <Form>
+      <Form onSubmit={handleInvite}>
         <Modal.Header closeButton>
-          <Modal.Title>Invite student</Modal.Title>
+          <Modal.Title>Invite {role}</Modal.Title>
         </Modal.Header>
         <Modal.Body className="my-3">
           <FloatingLabel label="Email">
@@ -33,15 +69,11 @@ const ModalInviteMembers = (props: ModalProps) => {
           </FloatingLabel>
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="secondary" onClick={props.onHide}>
+          <Button variant="light" onClick={props.onHide}>
             Cancel
           </Button>
-          <Button
-            variant="primary"
-            type="submit"
-            // disabled={loading || email === ""}
-          >
-            {loading ? (
+          <Button variant="success" type="submit" disabled={isLoading}>
+            {isLoading ? (
               <>
                 <Spinner
                   as="span"

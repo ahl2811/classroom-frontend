@@ -1,4 +1,9 @@
-import { IRoom, IRoomMembersRespone, IRoomsResponse } from "../common/types";
+import {
+  IRoom,
+  IRoomDetailResponse,
+  IRoomMembersResponse,
+  IRoomsResponse,
+} from "../common/types";
 import { getAuthorization, request } from "../common/utils";
 
 export const getRooms = async () => {
@@ -19,7 +24,7 @@ export const postRoom = async (room: IRoom) => {
 };
 
 export const getRoomDetail = async (id: string) => {
-  const { data } = await request.get<IRoom>(
+  const { data } = await request.get<IRoomDetailResponse>(
     `/classrooms/${id}`,
     getAuthorization()
   );
@@ -27,16 +32,42 @@ export const getRoomDetail = async (id: string) => {
 };
 
 export const getRoomMembers = async (id: string) => {
-  const { data } = await request.get<IRoomMembersRespone>(
+  const { data } = await request.get<IRoomMembersResponse>(
     `/classrooms/${id}/members`,
     getAuthorization()
   );
   return data;
 };
 
-export const joinRoom = async (id: string, code: string) => {
-  const { data } = await request.get<IRoomMembersRespone>(
-    `/classrooms/${id}/join?code=${code}&role=student`,
+export const joinRoom = async ({
+  id,
+  code,
+  role,
+}: {
+  id: string;
+  code: string;
+  role: string;
+}) => {
+  const queryString = `/classrooms/${id}/join?code=${code}&role=${role}`;
+  const { data } = await request.get<IRoomMembersResponse>(
+    queryString,
+    getAuthorization()
+  );
+  return data;
+};
+
+export const inviteByEmail = async ({
+  id,
+  email,
+  role,
+}: {
+  id: string;
+  email: string;
+  role: string;
+}) => {
+  const queryString = `/classrooms/${id}/joinByEmail?email=${email}&role=${role}`;
+  const { data } = await request.get<IRoomMembersResponse>(
+    queryString,
     getAuthorization()
   );
   return data;

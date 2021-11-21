@@ -16,19 +16,33 @@ const GoogleLoginButton = () => {
     response: GoogleLoginResponse | GoogleLoginResponseOffline
   ) => {
     console.log("Success", response);
+    let avatar: string = "";
+
+    if ("profileObj" in response) {
+      avatar = response.profileObj.imageUrl;
+    }
 
     if ("accessToken" in response) {
       try {
         const { accessToken } = response;
-        const { data } = await request.post<ILoginResponse>(
+        const {
+          data: { user, accessToken: token },
+        } = await request.post<ILoginResponse>(
           "/google-authentication",
           { token: accessToken },
           { headers: { "Content-Type": "application/json" } }
         );
-        if (data.user) {
-          dispatch(LoginSuccess(data.user));
+        if (user && token) {
+          const userInfo = {
+            ...user,
+            avatar,
+            accessToken: token,
+          };
+          dispatch(LoginSuccess(userInfo));
         }
-      } catch (error) {}
+      } catch (error) {
+        console.log("error", error);
+      }
     }
   };
 

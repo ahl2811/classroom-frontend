@@ -13,7 +13,7 @@ import { useParams } from "react-router";
 import { toast } from "react-toastify";
 import { getRoomDetail } from "../../api/room";
 import { ROOM } from "../../common/constants";
-import { IErrorResponse, IRoom } from "../../common/types";
+import { IErrorResponse, IRoomDetailResponse } from "../../common/types";
 import DisplayByStatus from "../../components/DisplayByStatus";
 import Options from "../../components/Options";
 import { OptionItem } from "../../components/styled/OptionStyle";
@@ -24,11 +24,10 @@ const NewsPage = () => {
   const { user } = useUserContext();
   const { id } = useParams<{ id: string }>();
 
-  const {
-    isLoading,
-    data: room,
-    error,
-  } = useQuery<IRoom, IErrorResponse>(ROOM.DETAIL, () => getRoomDetail(id));
+  const { isLoading, data, error } = useQuery<
+    IRoomDetailResponse,
+    IErrorResponse
+  >(ROOM.DETAIL, () => getRoomDetail(id));
 
   const copyToClipBoard = (value: string) => {
     toast.success(`Copied ${value}`, {
@@ -36,66 +35,81 @@ const NewsPage = () => {
       autoClose: 3000,
     });
   };
+
+  const isTeacher = data?.teachers.findIndex((t) => t.id === user?.id) !== -1;
+
   if (error || isLoading) {
     return <DisplayByStatus error={error} isLoading={isLoading} />;
   }
   return (
     <>
       <Row className="d-flex align-items-end rounded justify-content-between flex-column g-0 banner notify-item">
-        <div className="d-flex flex-row justify-content-end">
-          <DropdownButton
-            variant="light"
-            title="Customize"
-            className="m-3"
-            align="end"
-          >
-            <Dropdown.Item>Change background</Dropdown.Item>
-          </DropdownButton>
-        </div>
+        {isTeacher && (
+          <div className="d-flex flex-row justify-content-end">
+            <DropdownButton
+              variant="light"
+              title="Customize"
+              className="m-3"
+              align="end"
+            >
+              <Dropdown.Item>Change background</Dropdown.Item>
+            </DropdownButton>
+          </div>
+        )}
 
         <div className="text-white p-3">
-          <h1 className="class-name">{room?.name}</h1>
+          <h1 className="class-name">{data?.classroom.name}</h1>
           <h4 className="fw-normal mb-0 mt-1 class-description">
-            {room?.description}
+            {data?.classroom.description}
           </h4>
         </div>
       </Row>
       <Row className="notify-items">
         <Col md={3}>
+          {isTeacher && (
+            <CodeCard className="w-100 notify-item">
+              <Options
+                icon={
+                  <i className="bi bi-three-dots-vertical align-middle fs-5"></i>
+                }
+                menuCenter={true}
+                className="position-absolute mx-2 end-0 mt-2"
+              >
+                <CopyToClipboard
+                  text={`${window.location.origin}/classrooms/${data?.classroom.id}/join?code=${data?.classroom.code}`}
+                  onCopy={() => copyToClipBoard("invitation link")}
+                >
+                  <OptionItem>
+                    <i className="bi bi-link fs-5 me-3" />
+                    Copy invitation link
+                  </OptionItem>
+                </CopyToClipboard>
+                <CopyToClipboard
+                  text={`${data?.classroom.code}`}
+                  onCopy={() => copyToClipBoard("code")}
+                >
+                  <OptionItem>
+                    <i className="bi bi-clipboard fs-5 me-3" />
+                    Copy code
+                  </OptionItem>
+                </CopyToClipboard>
+                <OptionItem>
+                  <i className="bi bi-arrow-counterclockwise fs-5 me-3" />
+                  Reset code
+                </OptionItem>
+              </Options>
+              <Card.Body>
+                <Card.Title className="fs-6 text-normal">Code</Card.Title>
+                <Card.Text className="code">{data?.classroom.code}</Card.Text>
+              </Card.Body>
+            </CodeCard>
+          )}
           <CodeCard className="w-100 notify-item">
-            <Options
-              icon={
-                <i className="bi bi-three-dots-vertical align-middle fs-5"></i>
-              }
-              menuCenter={true}
-              className="position-absolute mx-2 end-0 mt-2"
-            >
-              <CopyToClipboard
-                text={`${window.location.origin}/classrooms/${room?.id}/join?code=${room?.code}`}
-                onCopy={() => copyToClipBoard("invitation link")}
-              >
-                <OptionItem>
-                  <i className="bi bi-link fs-5 me-3" />
-                  Copy invitation link
-                </OptionItem>
-              </CopyToClipboard>
-              <CopyToClipboard
-                text={`${room?.code}`}
-                onCopy={() => copyToClipBoard("code")}
-              >
-                <OptionItem>
-                  <i className="bi bi-clipboard fs-5 me-3" />
-                  Copy code
-                </OptionItem>
-              </CopyToClipboard>
-              <OptionItem>
-                <i className="bi bi-arrow-counterclockwise fs-5 me-3" />
-                Reset code
-              </OptionItem>
-            </Options>
             <Card.Body>
-              <Card.Title className="fs-6 text-normal">Code</Card.Title>
-              <Card.Text className="code">{room?.code}</Card.Text>
+              <Card.Title className="fs-6 text-normal">Deadlines</Card.Title>
+              <Card.Text className="text-secondary notify-deadline">
+                Yeah! No deadlines
+              </Card.Text>
             </Card.Body>
           </CodeCard>
         </Col>

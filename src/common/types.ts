@@ -38,7 +38,12 @@ export interface IErrorResponse {
   };
 }
 
-export interface IRoomMembersRespone {
+export interface IRoomDetailResponse {
+  teachers: IUser[];
+  classroom: IRoom;
+}
+
+export interface IRoomMembersResponse {
   teachers: IUser[];
   students: IUser[];
 }

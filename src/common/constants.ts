@@ -14,4 +14,5 @@ export const ROOM = {
   DETAIL: "room/detail",
   MEMBERS: "room/members",
   JOIN: "room/join",
+  INVITE_BY_EMAIL: "room/invite/email",
 };

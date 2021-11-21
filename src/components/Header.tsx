@@ -1,6 +1,6 @@
 import React, { ReactNode, useState } from "react";
 import { Container, Image, Nav, Navbar, Offcanvas } from "react-bootstrap";
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 import useUserContext from "../hooks/useUserContext";
 import { Logout } from "../store/actions";
 import ModalCreateRoom from "./modals/ModalCreateRoom";
@@ -20,9 +20,11 @@ export default function Header({
 }: IHeader) {
   const { user, dispatch } = useUserContext();
   const [showRoomCreation, setShowRoomCreation] = useState(false);
+  const history = useHistory();
 
   const handleLogout = () => {
     dispatch(Logout());
+    history.push("/login");
   };
 
   return (
