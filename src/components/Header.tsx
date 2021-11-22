@@ -1,11 +1,18 @@
 import React, { ReactNode, useState } from "react";
-import { Container, Image, Nav, Navbar, Offcanvas } from "react-bootstrap";
+import {
+  Container,
+  Image,
+  Nav,
+  Navbar,
+  Offcanvas,
+  Button,
+} from "react-bootstrap";
 import { Link, useHistory } from "react-router-dom";
 import useUserContext from "../hooks/useUserContext";
 import { Logout } from "../store/actions";
 import ModalCreateRoom from "./modals/ModalCreateRoom";
 import Options from "./Options";
-import { StyledHeader } from "./styled/CommonStyle";
+import { OffCanvasStyle, StyledHeader } from "./styled/CommonStyle";
 import { OptionItem } from "./styled/OptionStyle";
 
 interface IHeader {
@@ -86,7 +93,7 @@ export default function Header({
             </Options>
           </Nav.Item>
           <Navbar.Toggle aria-controls="offcanvasNavbar" className="ms-2" />
-          <Navbar.Offcanvas
+          <OffCanvasStyle
             className="ps-1"
             id="offcanvasNavbar"
             placement="end"
@@ -97,14 +104,37 @@ export default function Header({
               className="justify-content-end"
             ></Offcanvas.Header>
             <Offcanvas.Body>
-              <Options
-                icon={<Image src={user?.avatar} width={32} />}
-                className="position-relative user ms-2"
-              >
-                <OptionItem onClick={handleLogout}> Đăng xuất</OptionItem>
-              </Options>
+              <div className="oc-user">
+                <div>
+                  <Link to="/user/profile">
+                    <div
+                      key={user?.id}
+                      className="w-100 h-100 d-flex align-items-center oc-person"
+                    >
+                      <div className="avatar d-flex align-items-center justify-content-center me-2">
+                        <Image
+                          src={
+                            user?.avatar ||
+                            `https://ui-avatars.com/api/?name=${user?.name}&background=0D8ABC&color=fff`
+                          }
+                          roundedCircle
+                          height={32}
+                        />
+                      </div>
+                      <div className="d-flex flex-grow-1 pe-2">
+                        {user?.name}
+                      </div>
+                    </div>
+                  </Link>
+                </div>
+                <div className="text-center p-2">
+                  <Button variant="secondary" onClick={handleLogout}>
+                    Sign out
+                  </Button>
+                </div>
+              </div>
             </Offcanvas.Body>
-          </Navbar.Offcanvas>
+          </OffCanvasStyle>
         </Nav>
       </Container>
       <ModalCreateRoom

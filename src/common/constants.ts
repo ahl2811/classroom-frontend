@@ -6,6 +6,7 @@ export const GOOGLE_CLIENT_ID =
 export const USER = {
   LOGIN: "user/login",
   REGISTER: "user/register",
+  UPDATE_PROFILE: "user/update/profile",
 };
 
 export const ROOM = {

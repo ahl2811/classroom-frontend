@@ -38,6 +38,7 @@ const GoogleLoginButton = () => {
             avatar,
             accessToken: token,
           };
+
           dispatch(LoginSuccess(userInfo));
         }
       } catch (error) {

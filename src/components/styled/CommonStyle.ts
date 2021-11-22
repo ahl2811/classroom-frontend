@@ -45,6 +45,32 @@ export const StyledHeader = styled(Navbar)`
   }
 `;
 
+export const OffCanvasStyle = styled(Navbar.Offcanvas)`
+  .oc-user {
+    display: none !important;
+  }
+
+  .oc-person {
+    padding: 12px;
+    background: #fafafa;
+    border-radius: 20px;
+
+    &:hover {
+      background: #f8f8f8;
+      cursor: pointer;
+    }
+    &:active {
+      background: #f6f6f6;
+    }
+  }
+
+  @media screen and (max-width: 767px) {
+    .oc-user {
+      display: block !important;
+    }
+  }
+`;
+
 export const LoginContainer = styled(Container)`
   max-width: 480px;
   @media (max-width: 500px) {
@@ -231,6 +257,25 @@ export const ProfilePageStyle = styled(Container)`
     padding: 8px;
     font-size: 15px;
     text-align: center;
+
+    &:focus {
+      outline: none !important;
+      border: solid 1px #6dd5ed;
+    }
+  }
+
+  .profile-name {
+    min-height: 40px;
+    background: transparent;
+    border: solid 1px transparent;
+    border-radius: 20px;
+    padding: 0px 8px;
+    font-size: 32px;
+    text-align: center;
+
+    &:hover {
+      background: #fafafa;
+    }
 
     &:focus {
       outline: none !important;

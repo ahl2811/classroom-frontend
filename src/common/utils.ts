@@ -58,3 +58,7 @@ export const getRandomImageLink = () => {
   const index = Math.floor(Math.random() * colors.length);
   return `https://www.colorbook.io/imagecreator.php?hex=${colors[index]}&width=300&height=100`;
 };
+
+export const getAvatarUrl = (name: string) => {
+  return `https://ui-avatars.com/api/?name=${name}&background=0D8ABC&color=fff`;
+};
