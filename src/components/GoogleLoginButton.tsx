@@ -3,9 +3,10 @@ import GoogleLogin, {
   GoogleLoginResponse,
   GoogleLoginResponseOffline,
 } from "react-google-login";
+import { ToastContainer } from "react-toastify";
 import { GOOGLE_CLIENT_ID } from "../common/constants";
-import { ILoginResponse } from "../common/types";
-import { request } from "../common/utils";
+import { IErrorResponse, ILoginResponse } from "../common/types";
+import { request, toastError } from "../common/utils";
 import useUserContext from "../hooks/useUserContext";
 import { LoginSuccess } from "../store/actions";
 
@@ -42,6 +43,7 @@ const GoogleLoginButton = () => {
         }
       } catch (error) {
         console.log("error", error);
+        toastError(error as IErrorResponse);
       }
     }
   };
@@ -49,9 +51,11 @@ const GoogleLoginButton = () => {
   const handleLoginGoogleError = (
     res: GoogleLoginResponse | GoogleLoginResponseOffline
   ) => {
-    return;
+    console.log("Fail", res);
   };
   return (
+    <>
+    <ToastContainer/>
     <GoogleLogin
       clientId={GOOGLE_CLIENT_ID}
       buttonText="Sign in with Google"
@@ -60,6 +64,7 @@ const GoogleLoginButton = () => {
       cookiePolicy={"single_host_origin"}
       className="w-100 border-info rounded shadow-sm justify-content-center"
     />
+    </>
   );
 };
 
