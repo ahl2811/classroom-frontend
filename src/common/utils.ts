@@ -40,7 +40,6 @@ export const toastError = (
   error: IErrorResponse,
   altMessage: string = "Something were wrong!"
 ) => {
-  console.log(error);
   if (!error.response?.data?.message) {
     toast.error(altMessage);
     return;

@@ -4,8 +4,8 @@ import { useMutation } from "react-query";
 import { toast, ToastContainer } from "react-toastify";
 import { updateUserInfo } from "../api/user";
 import { USER } from "../common/constants";
-import { IUser } from "../common/types";
-import { getAvatarUrl } from "../common/utils";
+import { IErrorResponse, IUser } from "../common/types";
+import { getAvatarUrl, toastError } from "../common/utils";
 import Header from "../components/Header";
 import { ProfilePageStyle } from "../components/styled/CommonStyle";
 import useUserContext from "../hooks/useUserContext";
@@ -21,7 +21,6 @@ const ProfilePage = () => {
     updateUserInfo,
     {
       onSuccess: (data) => {
-        console.log(data);
         const newUserInfo: IUser = {
           ...data,
           accessToken: user?.accessToken,
@@ -33,6 +32,10 @@ const ProfilePage = () => {
           autoClose: 3000,
         });
       },
+      onError: (error) => {
+        const err = error as IErrorResponse;
+        toastError(err);
+      }
     }
   );
 

@@ -15,7 +15,6 @@ const GoogleLoginButton = () => {
   const handleLoginGoogleSuccess = async (
     response: GoogleLoginResponse | GoogleLoginResponseOffline
   ) => {
-    console.log("Success", response);
     let avatar: string = "";
 
     if ("profileObj" in response) {
@@ -50,7 +49,7 @@ const GoogleLoginButton = () => {
   const handleLoginGoogleError = (
     res: GoogleLoginResponse | GoogleLoginResponseOffline
   ) => {
-    console.log("Fail", res);
+    return;
   };
   return (
     <GoogleLogin
