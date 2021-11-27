@@ -8,10 +8,10 @@ import {
   useRouteMatch,
 } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
-import Header from "../../components/Header";
-import { RoomDetailsStyle } from "../../components/styled/CommonStyle";
-import MembersPage from "./MembersPage";
-import NewsPage from "./NewsPage";
+import Header from "../../components/header";
+import MembersPage from "./members";
+import NewsPage from "./news";
+import { RoomDetailsStyle } from "./style";
 
 const RoomDetailsPage = () => {
   const { path, url } = useRouteMatch();

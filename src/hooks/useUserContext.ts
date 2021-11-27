@@ -1,5 +1,5 @@
 import { useContext } from "react";
-import { store } from "../store/store";
+import { store } from "../store";
 
 const useUserContext = () => {
   const {

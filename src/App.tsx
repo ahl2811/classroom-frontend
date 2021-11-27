@@ -7,14 +7,14 @@ import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import "react-toastify/dist/ReactToastify.css";
 import "./App.css";
 import ProtectedRoute from "./components/ProtectedRoute";
+import LoginPage from "./pages/auth/login";
+import RegisterPage from "./pages/auth/register";
 import RoomDetailsPage from "./pages/details";
-import ErrorPage from "./pages/ErrorPage";
-import JoinClassPage from "./pages/JoinClassPage";
-import LoginPage from "./pages/LoginPage";
-import ProfilePage from "./pages/ProfilePage";
-import RegisterPage from "./pages/RegisterPage";
-import RoomsPage from "./pages/RoomsPage";
-import { AppProvider } from "./store/store";
+import JoinClassPage from "./pages/details/join";
+import ErrorPage from "./pages/error";
+import RoomsPage from "./pages/rooms";
+import ProfilePage from "./pages/user";
+import { AppProvider } from "./store";
 
 function App() {
   const queryClient = new QueryClient({

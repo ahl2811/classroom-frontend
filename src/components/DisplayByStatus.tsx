@@ -1,6 +1,6 @@
 import React from "react";
 import { IErrorResponse } from "../common/types";
-import ErrorPage from "../pages/ErrorPage";
+import ErrorPage from "../pages/error";
 
 interface IProps {
   isLoading: boolean;
