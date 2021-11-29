@@ -1,33 +1,39 @@
-import React from "react";
-import {
-  Card,
-  Col,
-  Dropdown,
-  DropdownButton,
-  Image,
-  Row,
-} from "react-bootstrap";
+import React, { useState } from "react";
+import { Col, Dropdown, DropdownButton, Image, Row } from "react-bootstrap";
 import CopyToClipboard from "react-copy-to-clipboard";
 import { useQuery } from "react-query";
 import { useParams } from "react-router";
+import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
-import { ROOM } from "../../common/constants";
+import { GRADE_STRUCTURE, ROOM } from "../../common/constants";
 import { IErrorResponse, IRoomDetailResponse } from "../../common/types";
 import DisplayByStatus from "../../components/DisplayByStatus";
-import Options from "../../components/options";
-import useUserContext from "../../hooks/useUserContext";
 import { OptionItem } from "../../components/options/style";
-import { CodeCard, PostNotifyCard } from "./style";
+import useUserContext from "../../hooks/useUserContext";
+import { getGradeStructures, IGradeStructure } from "../grade-structure/api";
 import { getRoomDetail } from "./api";
+import InfoNotify from "./components/InfoNotify";
+import { PostNotifyCard } from "./style";
 
 const NewsPage = () => {
   const { user } = useUserContext();
-  const { id } = useParams<{ id: string }>();
+  const { id: roomId } = useParams<{ id: string }>();
+  const [grades, setGrades] = useState<IGradeStructure[]>([]);
+
+  useQuery<IGradeStructure[], IErrorResponse>(
+    [GRADE_STRUCTURE.GET, roomId],
+    () => getGradeStructures(roomId),
+    {
+      onSuccess: (data) => {
+        setGrades(data);
+      },
+    }
+  );
 
   const { isLoading, data, error } = useQuery<
     IRoomDetailResponse,
     IErrorResponse
-  >([ROOM.DETAIL, id], () => getRoomDetail(id));
+  >([ROOM.DETAIL, roomId], () => getRoomDetail(roomId));
 
   const copyToClipBoard = (value: string) => {
     toast.success(`Copied ${value}`, {
@@ -66,53 +72,67 @@ const NewsPage = () => {
         </div>
       </Row>
       <Row className="notify-items">
-        <Col md={3}>
+        <Col md={3} style={{ minWidth: 244 }}>
           {isTeacher && (
-            <CodeCard className="w-100 notify-item">
-              <Options
-                icon={
-                  <i className="bi bi-three-dots-vertical align-middle fs-5"></i>
-                }
-                menuCenter={true}
-                className="position-absolute mx-2 end-0 mt-2"
-              >
-                <CopyToClipboard
-                  text={`${window.location.origin}/classrooms/${data?.classroom.id}/join?code=${data?.classroom.code}`}
-                  onCopy={() => copyToClipBoard("invitation link")}
-                >
+            <InfoNotify
+              title="Code"
+              optionItems={
+                <>
+                  <CopyToClipboard
+                    text={`${window.location.origin}/classrooms/${data?.classroom.id}/join?code=${data?.classroom.code}`}
+                    onCopy={() => copyToClipBoard("invitation link")}
+                  >
+                    <OptionItem>
+                      <i className="bi bi-link fs-5 me-3" />
+                      Copy invitation link
+                    </OptionItem>
+                  </CopyToClipboard>
+                  <CopyToClipboard
+                    text={`${data?.classroom.code}`}
+                    onCopy={() => copyToClipBoard("code")}
+                  >
+                    <OptionItem>
+                      <i className="bi bi-clipboard fs-5 me-3" />
+                      Copy code
+                    </OptionItem>
+                  </CopyToClipboard>
                   <OptionItem>
-                    <i className="bi bi-link fs-5 me-3" />
-                    Copy invitation link
+                    <i className="bi bi-arrow-counterclockwise fs-5 me-3" />
+                    Reset code
                   </OptionItem>
-                </CopyToClipboard>
-                <CopyToClipboard
-                  text={`${data?.classroom.code}`}
-                  onCopy={() => copyToClipBoard("code")}
-                >
-                  <OptionItem>
-                    <i className="bi bi-clipboard fs-5 me-3" />
-                    Copy code
-                  </OptionItem>
-                </CopyToClipboard>
-                <OptionItem>
-                  <i className="bi bi-arrow-counterclockwise fs-5 me-3" />
-                  Reset code
-                </OptionItem>
-              </Options>
-              <Card.Body>
-                <Card.Title className="fs-6 text-normal">Code</Card.Title>
-                <Card.Text className="code">{data?.classroom.code}</Card.Text>
-              </Card.Body>
-            </CodeCard>
+                </>
+              }
+            >
+              <div className="code">{data?.classroom.code}</div>
+            </InfoNotify>
           )}
-          <CodeCard className="w-100 notify-item">
-            <Card.Body>
-              <Card.Title className="fs-6 text-normal">Deadlines</Card.Title>
-              <Card.Text className="text-secondary notify-deadline">
-                Yeah! No deadlines
-              </Card.Text>
-            </Card.Body>
-          </CodeCard>
+          {/* <InfoNotify title="Deadlines">
+            <div className="notify-deadline text-secondary">
+              Yeah no deadline!
+            </div>
+          </InfoNotify> */}
+          <InfoNotify
+            title="Grade Structure"
+            optionItems={
+              <Link to={`/classrooms/${roomId}/grade-structure`}>
+                <OptionItem className="text-black">
+                  <i className="bi bi-pencil-square fs-5 me-2" /> Edit grade
+                  structure
+                </OptionItem>
+              </Link>
+            }
+          >
+            <div className="d-flex flex-column mt-3">
+              {grades.map((g) => {
+                return (
+                  <div className="d-flex flex-row justify-content-between mt-1 text-content">
+                    <div className="text-truncate pe-2">{g.name}</div>
+                    <div>{g.grade}</div>
+                  </div>
+                );
+              })}
+            </div>
+          </InfoNotify>
         </Col>
         <Col>
           <PostNotifyCard className="w-100 notify-item">

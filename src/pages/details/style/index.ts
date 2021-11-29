@@ -1,9 +1,9 @@
 import { Card, Container } from "react-bootstrap";
 import styled from "styled-components";
+import { PageContainer } from "../../../components/style";
 
-export const RoomDetailsStyle = styled(Container)`
+export const RoomDetailsStyle = styled(PageContainer)`
   max-width: 1000px;
-  padding: 0px 24px;
 
   .banner {
     height: 240px;
@@ -15,7 +15,10 @@ export const RoomDetailsStyle = styled(Container)`
     border-radius: 8px;
   }
 
-  @media screen and (max-width: 636px) {
+  @media screen and (max-width: 425px) {
+    .notify-item {
+      margin-bottom: 8px;
+    }
     .banner {
       height: 180px;
       .class-name {
@@ -25,18 +28,13 @@ export const RoomDetailsStyle = styled(Container)`
         font-size: 18px;
       }
     }
-  }
-
-  @media screen and (max-width: 425px) {
-    padding: 0 12px;
-    .notify-item {
-      margin-bottom: 8px;
-    }
   } ;
 `;
 
 export const MembersListStyle = styled(Container)`
   max-width: 760px;
+  padding-left: 0;
+  padding-right: 0;
 
   .member-title {
     font-size: 32px;
@@ -80,9 +78,7 @@ export const MembersListStyle = styled(Container)`
   }
 `;
 
-export const JoinClassPageStyle = styled(Container)`
-  padding: 28px 20px;
-
+export const JoinClassPageStyle = styled(PageContainer)`
   .join-class-container {
     max-width: 760px;
     padding: 0;
@@ -93,7 +89,7 @@ export const JoinClassPageStyle = styled(Container)`
 
   .join-class-banner {
     border-radius: 8px 8px 0 0;
-    background-color: #eee;
+    background-color: #f8f8f8;
     text-align: center;
     padding: 20px;
   }
@@ -101,22 +97,17 @@ export const JoinClassPageStyle = styled(Container)`
   .join-class-footer {
     font-size: 14px;
   }
-
-  @media screen and (max-width: 375px) {
-    padding: 16px 12px;
-  }
 `;
 
-export const CodeCard = styled(Card)`
+export const InfoNotifyCard = styled(Card)`
   .code {
     font-size: 18px;
     color: teal;
     font-weight: 500;
     letter-spacing: 1px;
   }
-  .notify-deadline {
-    font-size: 14px;
-    color: #ccc;
+  .text-content {
+    font-size: 15px;
   }
 `;
 

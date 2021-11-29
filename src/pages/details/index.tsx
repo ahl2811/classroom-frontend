@@ -49,7 +49,7 @@ const RoomDetailsPage = () => {
   return (
     <>
       <Header roomDetailsNav={RoomDetailsNav} />
-      <RoomDetailsStyle className="py-4">
+      <RoomDetailsStyle>
         <ToastContainer />
         <Switch>
           <Route path={`${path}/tasks`}>Homeworks page</Route>

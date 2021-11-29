@@ -7,11 +7,12 @@ import { IErrorResponse, IRoomsResponse } from "../../common/types";
 import { getRandomImageLink } from "../../common/utils";
 import Header from "../../components/header";
 import Options from "../../components/options";
-import { Logout } from "../../store/actions";
-import { store } from "../../store";
-import { RoomCard, RoomsPageStyle } from "./style";
 import { OptionItem } from "../../components/options/style";
+import { PageContainer } from "../../components/style";
+import { store } from "../../store";
+import { Logout } from "../../store/actions";
 import { getRooms } from "./api";
+import { RoomCard } from "./style";
 
 export default function RoomsPage() {
   const [rooms, setRooms] = useState<IRoomsResponse>([]);
@@ -37,9 +38,9 @@ export default function RoomsPage() {
     <>
       <Header isHome={true} />
       {isLoading ? (
-        <div className="p-2">Loading...</div>
+        <div className="p-4">Loading...</div>
       ) : (
-        <RoomsPageStyle fluid>
+        <PageContainer fluid>
           {rooms.length > 0 ? (
             <Row className="gx-4 gt-4">
               {rooms.map((room) => (
@@ -47,7 +48,7 @@ export default function RoomsPage() {
                   <RoomCard className="mr-2 mb-4">
                     <Options
                       icon={
-                        <i className="bi bi-three-dots-vertical align-middle fs-5 text-light"></i>
+                        <i className="bi bi-three-dots-vertical align-middle icon text-light"></i>
                       }
                       className="position-absolute mx-2 end-0 mt-2"
                     >
@@ -83,7 +84,7 @@ export default function RoomsPage() {
               Chưa có lớp học
             </div>
           )}
-        </RoomsPageStyle>
+        </PageContainer>
       )}
     </>
   );

@@ -6,18 +6,24 @@ export const OptionsStyle = styled.div<{
   width: 40px;
   height: 40px;
   border-radius: 20px;
-  padding: 4px;
   text-align: center;
   cursor: pointer;
 
   ${({ isActive }) =>
     isActive
       ? "background: rgba(0, 0, 0, 0.1);"
-      : "&:hover {background: rgba(0, 0, 0, 0.05); .blur-hover{opacity: 0.85}}"};
+      : "&:hover {background: rgba(0, 0, 0, 0.05); .blur-hover{opacity: 0.85} transition: background-color 0.2s linear;}"};
 
   .icon {
-    border-radius: 50%;
+    line-height: 40px;
+    font-size: 20px;
     overflow: hidden;
+  }
+
+  .opt-image {
+    margin: 4px;
+    border-radius: 50%;
+    width: 32px;
   }
 
   .link-item {
@@ -48,9 +54,10 @@ export const OptionMenu = styled.div<{ menuCenter?: boolean }>`
 export const OptionItem = styled.div`
   padding: 0px 16px;
   &:hover {
-    background: #eee;
+    background: #f3f3f3;
+    transition: background-color 0.2s linear;
   }
   &:active {
-    background: #ddd;
+    background: #e3e3e3;
   }
 `;

@@ -4,7 +4,7 @@ import styled from "styled-components";
 export const HeaderStyle = styled(Navbar)`
   box-shadow: 0px 1px 2px #ccc;
   min-height: 64px;
-  padding: 0;
+  padding: 0 24px;
 
   .nav-link {
     padding-left: 16px;
@@ -33,6 +33,10 @@ export const HeaderStyle = styled(Navbar)`
     .wrapper {
       min-width: 320px;
     }
+  }
+
+  @media screen and (max-width: 425px) {
+    padding: 0 12px;
   }
 
   @media screen and (max-width: 375px) {

@@ -12,6 +12,7 @@ import RegisterPage from "./pages/auth/register";
 import RoomDetailsPage from "./pages/details";
 import JoinClassPage from "./pages/details/join";
 import ErrorPage from "./pages/error";
+import GradeStructurePage from "./pages/grade-structure";
 import RoomsPage from "./pages/rooms";
 import ProfilePage from "./pages/user";
 import { AppProvider } from "./store";
@@ -37,6 +38,9 @@ function App() {
             <Route path="/register" component={RegisterPage} />
             <ProtectedRoute path="/classrooms/:id/join">
               <JoinClassPage />
+            </ProtectedRoute>
+            <ProtectedRoute path="/classrooms/:id/grade-structure">
+              <GradeStructurePage />
             </ProtectedRoute>
             <ProtectedRoute path="/classrooms/:id">
               <RoomDetailsPage />

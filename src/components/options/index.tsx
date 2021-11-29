@@ -31,7 +31,7 @@ function Options({
         ref={ref}
         {...rest}
       >
-        <div className="blur-hover icon">{icon}</div>
+        <div className="blur-hover">{icon}</div>
         {showMenu && (
           <OptionMenu menuCenter={menuCenter}>{children}</OptionMenu>
         )}

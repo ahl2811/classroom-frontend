@@ -1,9 +1,7 @@
-import { Container } from "react-bootstrap";
 import styled from "styled-components";
+import { PageContainer } from "../../../components/style";
 
-export const ProfilePageStyle = styled(Container)`
-  padding: 32px 20px 0px;
-
+export const ProfilePageStyle = styled(PageContainer)`
   .profile-container {
     max-width: 600px;
     padding: 0;
@@ -72,9 +70,5 @@ export const ProfilePageStyle = styled(Container)`
     border-radius: 20px;
     padding: 8px 20px;
     margin-top: 28px;
-  }
-
-  @media screen and (max-width: 375px) {
-    padding: 16px 12px;
   }
 `;

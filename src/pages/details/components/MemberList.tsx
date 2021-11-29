@@ -26,7 +26,7 @@ const MemberList = ({
   const [showModal, setShowModal] = useState(false);
   return (
     <MembersListStyle>
-      <div className="d-flex flex-row justify-content-between member-title align-items-start mb-3">
+      <div className="d-flex flex-row justify-content-between member-title align-items-center mb-3">
         <div className=" text-capitalize member-type">{title}</div>
         <div className="fs-6 mb-2 d-flex flex-row align-items-center">
           <>

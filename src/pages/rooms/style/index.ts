@@ -1,12 +1,5 @@
-import { Card, Container } from "react-bootstrap";
+import { Card } from "react-bootstrap";
 import styled from "styled-components";
-
-export const RoomsPageStyle = styled(Container)`
-  padding: 20px;
-  @media screen and (max-width: 375px) {
-    padding: 20px 12px;
-  }
-`;
 
 export const RoomCard = styled(Card)`
   &:hover {

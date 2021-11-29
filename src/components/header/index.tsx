@@ -39,7 +39,7 @@ export default function Header({
     <HeaderStyle bg="white" expand="none" sticky="top">
       <Container
         fluid
-        className="d-flex justify-content-between flex-wrap py-2"
+        className="d-flex justify-content-between flex-wrap py-2 px-0"
       >
         <Nav className="order-first">
           <Link to="/">
@@ -78,7 +78,9 @@ export default function Header({
           </Nav.Item>
           <Nav.Item>
             <Options
-              icon={<Image src={user?.avatar} width={32} />}
+              icon={
+                <Image src={user?.avatar} width={32} className="opt-image" />
+              }
               className="position-relative user mx-2"
               menuCenter={true}
             >
@@ -95,42 +97,42 @@ export default function Header({
           </Nav.Item>
           <Navbar.Toggle aria-controls="offcanvasNavbar" className="ms-2" />
           <OffCanvasStyle
-            className="ps-1"
             id="offcanvasNavbar"
             placement="end"
             style={{ maxWidth: 280 }}
           >
-            <Offcanvas.Header
+            {/* <Offcanvas.Header
               closeButton
               className="justify-content-end"
-            ></Offcanvas.Header>
+            ></Offcanvas.Header> */}
             <Offcanvas.Body>
               <div className="oc-user">
-                <div>
-                  <Link to="/user/profile">
-                    <div
-                      key={user?.id}
-                      className="w-100 h-100 d-flex align-items-center oc-person"
-                    >
-                      <div className="avatar d-flex align-items-center justify-content-center me-2">
-                        <Image
-                          src={
-                            user?.avatar ||
-                            `https://ui-avatars.com/api/?name=${user?.name}&background=0D8ABC&color=fff`
-                          }
-                          roundedCircle
-                          height={32}
-                        />
-                      </div>
-                      <div className="d-flex flex-grow-1 pe-2">
-                        {user?.name}
+                <Link to="/user/profile">
+                  <div
+                    key={user?.id}
+                    className="w-100 h-100 d-flex align-items-center oc-person"
+                  >
+                    <div className="avatar d-flex align-items-center justify-content-center me-2">
+                      <Image
+                        src={
+                          user?.avatar ||
+                          `https://ui-avatars.com/api/?name=${user?.name}&background=0D8ABC&color=fff`
+                        }
+                        roundedCircle
+                        height={36}
+                      />
+                    </div>
+                    <div className="d-flex flex-grow-1 flex-column text-truncate ms-1">
+                      <div className="name">{user?.name}</div>
+                      <div className="text-secondary text-truncate email">
+                        {user?.email}
                       </div>
                     </div>
-                  </Link>
-                </div>
+                  </div>
+                </Link>
                 <div className="text-center p-2">
-                  <Button variant="secondary" onClick={handleLogout}>
-                    Sign out
+                  <Button variant="light" onClick={handleLogout}>
+                    <i className="bi bi-box-arrow-right fs-6 me-2" /> Sign out
                   </Button>
                 </div>
               </div>

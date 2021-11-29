@@ -1,4 +1,6 @@
-export const SERVER_URL = process.env.REACT_APP_SERVER_URL || "https://webnc-classroom-backend.herokuapp.com/api";
+export const SERVER_URL =
+  process.env.REACT_APP_SERVER_URL ||
+  "https://webnc-classroom-backend.herokuapp.com/api";
 export const GOOGLE_CLIENT_ID =
   process.env.GOOGLE_CLIENT_API ||
   "157282466908-fbu8722ebcdgtu5ej4e44bc61m1rkdmb.apps.googleusercontent.com";
@@ -16,4 +18,8 @@ export const ROOM = {
   MEMBERS: "room/members",
   JOIN: "room/join",
   INVITE_BY_EMAIL: "room/invite/email",
+};
+
+export const GRADE_STRUCTURE = {
+  GET: "grade-structures",
 };
