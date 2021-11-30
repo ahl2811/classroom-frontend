@@ -5,12 +5,15 @@ import { useQuery } from "react-query";
 import { useParams } from "react-router";
 import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
-import { GRADE_STRUCTURE, ROOM } from "../../common/constants";
+import { ROOM } from "../../common/constants";
 import { IErrorResponse, IRoomDetailResponse } from "../../common/types";
 import DisplayByStatus from "../../components/DisplayByStatus";
 import { OptionItem } from "../../components/options/style";
 import useUserContext from "../../hooks/useUserContext";
-import { getGradeStructures, IGradeStructure } from "../grade-structure/api";
+import {
+  getGradeStructuresInfo,
+  IGradeStructure,
+} from "../grade-structure/api";
 import { getRoomDetail } from "./api";
 import InfoNotify from "./components/InfoNotify";
 import { PostNotifyCard } from "./style";
@@ -21,12 +24,13 @@ const NewsPage = () => {
   const [grades, setGrades] = useState<IGradeStructure[]>([]);
 
   useQuery<IGradeStructure[], IErrorResponse>(
-    [GRADE_STRUCTURE.GET, roomId],
-    () => getGradeStructures(roomId),
+    ["grade-structure-info", roomId],
+    () => getGradeStructuresInfo(roomId),
     {
       onSuccess: (data) => {
         setGrades(data);
       },
+      refetchOnWindowFocus: true,
     }
   );
 
@@ -114,29 +118,31 @@ const NewsPage = () => {
           <InfoNotify
             title="Grade Structure"
             optionItems={
-              <Link to={`/classrooms/${roomId}/grade-structure`}>
-                <OptionItem className="text-black">
-                  <i className="bi bi-pencil-square fs-5 me-2" /> Edit grade
-                  structure
-                </OptionItem>
-              </Link>
+              isTeacher && (
+                <Link to={`/classrooms/${roomId}/grade-structure`}>
+                  <OptionItem className="text-black">
+                    <i className="bi bi-pencil-square fs-5 me-2" /> Edit grade
+                    structure
+                  </OptionItem>
+                </Link>
+              )
             }
           >
             <div className="d-flex flex-column mt-3">
               {grades.length > 0 ? (
                 grades.map((g) => {
                   return (
-                    <div className="d-flex flex-row justify-content-between mt-1 text-content">
+                    <div
+                      className="d-flex flex-row justify-content-between mt-1 text-content"
+                      key={g.id}
+                    >
                       <div className="text-truncate pe-2">{g.name}</div>
                       <div>{g.grade}</div>
                     </div>
                   );
                 })
               ) : (
-                <div
-                  className="text-secondary text-center"
-                  style={{ fontSize: 14 }}
-                >
+                <div className="text-secondary text-center text-small">
                   Grade structure is empty!
                 </div>
               )}

@@ -8,6 +8,14 @@ export interface IGradeStructure {
 
 export const getGradeStructures = async (id: string) => {
   const { data } = await request.get<IGradeStructure[]>(
+    `/classrooms/${id}/grade-structures?edit=true`,
+    getAuthorization()
+  );
+  return data;
+};
+
+export const getGradeStructuresInfo = async (id: string) => {
+  const { data } = await request.get<IGradeStructure[]>(
     `/classrooms/${id}/grade-structures`,
     getAuthorization()
   );

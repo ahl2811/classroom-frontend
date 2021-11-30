@@ -16,3 +16,6 @@ a {
 .classroom-btn:hover {
   background: linear-gradient(to bottom right, #30cfd0 0%, #330867 100%);
 }
+.text-small {
+  font-size: 14px;
+}

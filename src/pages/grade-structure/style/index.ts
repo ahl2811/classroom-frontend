@@ -1,6 +1,5 @@
 import styled from "styled-components";
 import { PageContainer } from "../../../components/style";
-import InfoNotify from "../../details/components/InfoNotify";
 
 export const GradeStructurePageStyle = styled(PageContainer)`
   max-width: 760px;
@@ -61,8 +60,4 @@ export const GradeStructurePageStyle = styled(PageContainer)`
       font-size: 20px;
     }
   }
-`;
-
-export const GradeItemStyle = styled(InfoNotify)`
-  background-color: inherit !important;
 `;
