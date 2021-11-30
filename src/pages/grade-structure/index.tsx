@@ -23,13 +23,7 @@ import ModalUpdateGrade from "./components/ModalUpdateGrade";
 import { GradeStructurePageStyle } from "./style";
 
 const getItemStyle = (isDragging: boolean, draggableStyle: any) => ({
-  padding: `8px 12px`,
-  margin: `20px 0px`,
-  background: isDragging ? "teal" : "white",
-  color: isDragging ? "white" : "teal",
-  border: `1px solid #ddd`,
-  fontSize: `20px`,
-  borderRadius: `8px`,
+  background: isDragging ? "#fcfffe" : "white",
   ...draggableStyle,
 });
 
@@ -58,7 +52,6 @@ const GradeStructurePage = () => {
     deleteGradeStructure,
     {
       onMutate: (data) => {
-        console.log("muta", data);
         const oldData = queryClient.getQueryData<IGradeStructure[]>([
           GRADE_STRUCTURE.GET,
           roomId,
@@ -126,8 +119,8 @@ const GradeStructurePage = () => {
       <GradeStructurePageStyle>
         <DragDropContext onDragEnd={onDragEnd}>
           <div className="page-container">
-            <div className="d-flex flex-row justify-content-between border-bottom pb-2">
-              <h2 className="text-secondary">Grade Structure</h2>
+            <div className="d-flex flex-row justify-content-between pb-2">
+              <h2 className="grade-structure">Grade Structure</h2>
               <ModalAddGrade roomId={roomId} />
             </div>
             <Droppable droppableId="grades">
@@ -150,29 +143,32 @@ const GradeStructurePage = () => {
                                 snapshot.isDragging,
                                 provided.draggableProps.style
                               )}
-                              className="shadow-sm"
+                              className="shadow-sm grade-item"
                             >
-                              <div className="d-flex flex-row justify-content-between align-items-end">
-                                <h5>{name}</h5>
-                                <ModalUpdateGrade
-                                  roomId={roomId}
-                                  gradeName={name}
-                                  gradePoints={grade}
-                                  gradeId={id}
-                                />
-                                <IconButtonStyle
-                                  disabled={isDeleting}
-                                  onClick={() =>
-                                    handleDelete({ roomId, gradeId: id })
-                                  }
-                                >
-                                  <i
-                                    className="bi bi-trash text-black"
-                                    style={{ fontSize: 20 }}
+                              <div className="d-flex flex-row justify-content-between align-items-center">
+                                <div className="text-truncate">
+                                  <h5 className="text-truncate">{name}</h5>
+                                  <span className="rounded-pill text-white px-3 py-1 shadow-sm grade-badge">
+                                    {grade}
+                                  </span>
+                                </div>
+                                <div className="d-flex no-wrap">
+                                  <ModalUpdateGrade
+                                    roomId={roomId}
+                                    gradeName={name}
+                                    gradePoints={grade}
+                                    gradeId={id}
                                   />
-                                </IconButtonStyle>
+                                  <IconButtonStyle
+                                    disabled={isDeleting}
+                                    onClick={() =>
+                                      handleDelete({ roomId, gradeId: id })
+                                    }
+                                  >
+                                    <i className="bi bi-trash text-black" />
+                                  </IconButtonStyle>
+                                </div>
                               </div>
-                              {grade}
                             </div>
                           )}
                         </Draggable>

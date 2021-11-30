@@ -39,7 +39,6 @@ const ModalUpdateGrade = ({
     () => updateGradeStruture({ id: roomId, name, grade, gradeId }),
     {
       onSuccess: (data) => {
-        console.log(data);
         queryClient.setQueryData<IGradeStructure[]>(
           [GRADE_STRUCTURE.GET, roomId],
           (oldQueryData) => {

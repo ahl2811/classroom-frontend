@@ -30,7 +30,6 @@ const ModalAddGrade = ({ roomId }: IProps) => {
     () => addGradeStruture({ id: roomId, name, grade }),
     {
       onSuccess: (data) => {
-        console.log(data);
         queryClient.setQueryData<IGradeStructure[]>(
           [GRADE_STRUCTURE.GET, roomId],
           (oldQueryData) => {
@@ -62,7 +61,10 @@ const ModalAddGrade = ({ roomId }: IProps) => {
   return (
     <>
       <ToastContainer />
-      <Button className="add-btn" onClick={() => setShowModal(!showModal)}>
+      <Button
+        className="add-btn text-nowrap"
+        onClick={() => setShowModal(!showModal)}
+      >
         <span>
           <i className="bi bi-node-plus me-2" /> Add new
         </span>
@@ -88,6 +90,7 @@ const ModalAddGrade = ({ roomId }: IProps) => {
                 onChange={(e) => setGrade(+e.target.value)}
                 required
                 type="number"
+                min={0}
               />
             </FloatingLabel>
           </Modal.Body>

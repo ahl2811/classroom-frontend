@@ -123,14 +123,23 @@ const NewsPage = () => {
             }
           >
             <div className="d-flex flex-column mt-3">
-              {grades.map((g) => {
-                return (
-                  <div className="d-flex flex-row justify-content-between mt-1 text-content">
-                    <div className="text-truncate pe-2">{g.name}</div>
-                    <div>{g.grade}</div>
-                  </div>
-                );
-              })}
+              {grades.length > 0 ? (
+                grades.map((g) => {
+                  return (
+                    <div className="d-flex flex-row justify-content-between mt-1 text-content">
+                      <div className="text-truncate pe-2">{g.name}</div>
+                      <div>{g.grade}</div>
+                    </div>
+                  );
+                })
+              ) : (
+                <div
+                  className="text-secondary text-center"
+                  style={{ fontSize: 14 }}
+                >
+                  Grade structure is empty!
+                </div>
+              )}
             </div>
           </InfoNotify>
         </Col>
