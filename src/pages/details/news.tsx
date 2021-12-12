@@ -1,11 +1,11 @@
-import React, { useState } from "react";
+import React from "react";
 import { Col, Dropdown, DropdownButton, Image, Row } from "react-bootstrap";
 import CopyToClipboard from "react-copy-to-clipboard";
 import { useQuery } from "react-query";
 import { useParams } from "react-router";
 import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
-import { ROOM } from "../../common/constants";
+import { GRADE_STRUCTURE, ROOM } from "../../common/constants";
 import { IErrorResponse, IRoomDetailResponse } from "../../common/types";
 import DisplayByStatus from "../../components/DisplayByStatus";
 import { OptionItem } from "../../components/options/style";
@@ -21,23 +21,19 @@ import { PostNotifyCard } from "./style";
 const NewsPage = () => {
   const { user } = useUserContext();
   const { id: roomId } = useParams<{ id: string }>();
-  const [grades, setGrades] = useState<IGradeStructure[]>([]);
 
-  useQuery<IGradeStructure[], IErrorResponse>(
-    ["grade-structure-info", roomId],
-    () => getGradeStructuresInfo(roomId),
-    {
-      onSuccess: (data) => {
-        setGrades(data);
-      },
-      refetchOnWindowFocus: true,
-    }
+  const { data: grades } = useQuery<IGradeStructure[], IErrorResponse>(
+    [GRADE_STRUCTURE.GET, roomId],
+    () => getGradeStructuresInfo(roomId)
   );
 
-  const { isLoading, data, error } = useQuery<
-    IRoomDetailResponse,
-    IErrorResponse
-  >([ROOM.DETAIL, roomId], () => getRoomDetail(roomId));
+  const {
+    isLoading,
+    data: room,
+    error,
+  } = useQuery<IRoomDetailResponse, IErrorResponse>([ROOM.DETAIL, roomId], () =>
+    getRoomDetail(roomId)
+  );
 
   const copyToClipBoard = (value: string) => {
     toast.success(`Copied ${value}`, {
@@ -46,7 +42,7 @@ const NewsPage = () => {
     });
   };
 
-  const isTeacher = data?.teachers.findIndex((t) => t.id === user?.id) !== -1;
+  const isTeacher = room?.teachers.findIndex((t) => t.id === user?.id) !== -1;
 
   if (error || isLoading) {
     return <DisplayByStatus error={error} isLoading={isLoading} />;
@@ -69,9 +65,9 @@ const NewsPage = () => {
         </div>
 
         <div className="text-white p-3">
-          <h1 className="class-name">{data?.classroom.name}</h1>
+          <h1 className="class-name">{room?.classroom.name}</h1>
           <h4 className="fw-normal mb-0 mt-1 class-description">
-            {data?.classroom.description}
+            {room?.classroom.description}
           </h4>
         </div>
       </Row>
@@ -83,7 +79,7 @@ const NewsPage = () => {
               optionItems={
                 <>
                   <CopyToClipboard
-                    text={`${window.location.origin}/classrooms/${data?.classroom.id}/join?code=${data?.classroom.code}`}
+                    text={`${window.location.origin}/classrooms/${room?.classroom.id}/join?code=${room?.classroom.code}`}
                     onCopy={() => copyToClipBoard("invitation link")}
                   >
                     <OptionItem>
@@ -92,7 +88,7 @@ const NewsPage = () => {
                     </OptionItem>
                   </CopyToClipboard>
                   <CopyToClipboard
-                    text={`${data?.classroom.code}`}
+                    text={`${room?.classroom.code}`}
                     onCopy={() => copyToClipBoard("code")}
                   >
                     <OptionItem>
@@ -107,7 +103,7 @@ const NewsPage = () => {
                 </>
               }
             >
-              <div className="code">{data?.classroom.code}</div>
+              <div className="code">{room?.classroom.code}</div>
             </InfoNotify>
           )}
           {/* <InfoNotify title="Deadlines">
@@ -129,7 +125,7 @@ const NewsPage = () => {
             }
           >
             <div className="d-flex flex-column mt-3">
-              {grades.length > 0 ? (
+              {grades && grades.length > 0 ? (
                 grades.map((g) => {
                   return (
                     <div

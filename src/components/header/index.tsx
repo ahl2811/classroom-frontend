@@ -72,7 +72,7 @@ export default function Header({
                 icon={<i className="bi bi-gear icon fs-5 fw-bold" />}
                 className="position-relative"
               >
-                <OptionItem onClick={handleLogout}>Settings</OptionItem>
+                <OptionItem>Settings</OptionItem>
               </Options>
             )}
           </Nav.Item>

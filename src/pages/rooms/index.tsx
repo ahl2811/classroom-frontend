@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext } from "react";
 import { Button, Card, Col, Row } from "react-bootstrap";
 import { useQuery } from "react-query";
 import { Link, useHistory } from "react-router-dom";
@@ -15,21 +15,20 @@ import { getRooms } from "./api";
 import { RoomCard } from "./style";
 
 export default function RoomsPage() {
-  const [rooms, setRooms] = useState<IRoomsResponse>([]);
   const { dispatch } = useContext(store);
   const history = useHistory();
-  const { isLoading } = useQuery<IRoomsResponse, IErrorResponse>(
+  const { isLoading, data: rooms } = useQuery<IRoomsResponse, IErrorResponse>(
     ROOM.GET,
     getRooms,
     {
-      onSuccess: (data) => {
-        setRooms(data);
-      },
-      onError: () => {
-        dispatch(Logout());
-        history.push(
-          "/login?message=Your session was expired. Please login again!"
-        );
+      onError: (err) => {
+        if (err.response.data.statusCode === 401) {
+          dispatch(Logout());
+          history.push(
+            "/login?message=Your session was expired. Please login again!"
+          );
+          return;
+        }
       },
     }
   );
@@ -41,7 +40,7 @@ export default function RoomsPage() {
         <div className="p-4">Loading...</div>
       ) : (
         <PageContainer fluid>
-          {rooms.length > 0 ? (
+          {rooms && rooms.length > 0 ? (
             <Row className="gx-4 gt-4">
               {rooms.map((room) => (
                 <Col key={room.classroom.id} lg={3} md={4} sm={6} xs={12}>
