@@ -9,9 +9,9 @@ import {
 } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import Header from "../../components/header";
+import GradesPage from "../grades";
 import MembersPage from "./members";
 import NewsPage from "./news";
-import { RoomDetailsStyle } from "./style";
 
 const RoomDetailsPage = () => {
   const { path, url } = useRouteMatch();
@@ -25,22 +25,22 @@ const RoomDetailsPage = () => {
       <div className="d-flex flex-row order-last order-sm-2 justify-content-center flex-fill flex-grow-2">
         <Nav.Item className="text-nowrap">
           <Link to={`${url}`}>
-            <Nav.Link href={`${url}`}>News</Nav.Link>
+            <Nav.Link href={`${url}`}>Stream</Nav.Link>
           </Link>
         </Nav.Item>
         <Nav.Item className="text-nowrap">
           <Link to={`${url}/tasks`}>
-            <Nav.Link href={`${url}/tasks`}>Homeworks</Nav.Link>
+            <Nav.Link href={`${url}/tasks`}>Classworks</Nav.Link>
           </Link>
         </Nav.Item>
         <Nav.Item className="text-nowrap">
           <Link to={`${url}/members`}>
-            <Nav.Link href={`${url}/members`}>Members</Nav.Link>
+            <Nav.Link href={`${url}/members`}>People</Nav.Link>
           </Link>
         </Nav.Item>
         <Nav.Item className="text-nowrap">
-          <Link to={`${url}/scores`}>
-            <Nav.Link href={`${url}/scores`}>Scores</Nav.Link>
+          <Link to={`${url}/grades`}>
+            <Nav.Link href={`${url}/grades`}>Grades</Nav.Link>
           </Link>
         </Nav.Item>
       </div>
@@ -49,15 +49,14 @@ const RoomDetailsPage = () => {
   return (
     <>
       <Header roomDetailsNav={RoomDetailsNav} />
-      <RoomDetailsStyle>
-        <ToastContainer />
-        <Switch>
-          <Route path={`${path}/tasks`}>Homeworks page</Route>
-          <Route path={`${path}/members`} component={MembersPage} />
-          <Route path={`${path}/scores`}>Scores page</Route>
-          <Route path={path} component={NewsPage} />
-        </Switch>
-      </RoomDetailsStyle>
+
+      <ToastContainer />
+      <Switch>
+        <Route path={`${path}/tasks`}>Homeworks page</Route>
+        <Route path={`${path}/members`} component={MembersPage} />
+        <Route path={`${path}/grades`} component={GradesPage} />
+        <Route path={path} component={NewsPage} />
+      </Switch>
     </>
   );
 };

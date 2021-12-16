@@ -1,5 +1,4 @@
 import React from "react";
-import { Stack } from "react-bootstrap";
 import { useQuery } from "react-query";
 import { useParams } from "react-router";
 import { ROOM } from "../../common/constants";
@@ -8,6 +7,7 @@ import DisplayByStatus from "../../components/DisplayByStatus";
 import useUserContext from "../../hooks/useUserContext";
 import { getRoomMembers } from "./api";
 import MemberList from "./components/MemberList";
+import { RoomDetailsStyle } from "./style";
 
 const MembersPage = () => {
   const { id } = useParams<{ id: string }>();
@@ -31,7 +31,7 @@ const MembersPage = () => {
   }
 
   return (
-    <Stack>
+    <RoomDetailsStyle>
       <MemberList
         title="Teachers"
         members={teachers}
@@ -47,7 +47,7 @@ const MembersPage = () => {
         roomId={id}
         role="student"
       />
-    </Stack>
+    </RoomDetailsStyle>
   );
 };
 

@@ -14,7 +14,7 @@ export const HeaderStyle = styled(Navbar)`
   .nav-link.active {
     font-weight: 500;
     color: teal !important;
-    border-bottom: solid teal 2px;
+    border-bottom: solid teal 4px;
   }
 
   .brand {

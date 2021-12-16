@@ -11,6 +11,7 @@ export const getGradeStructures = async (id: string) => {
     `/classrooms/${id}/grade-structures?edit=true`,
     getAuthorization()
   );
+  console.log(data);
   return data;
 };
 

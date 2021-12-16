@@ -4,6 +4,7 @@ import React from "react";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { ReactQueryDevtools } from "react-query/devtools";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
+import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "./App.css";
 import ProtectedRoute from "./components/ProtectedRoute";
@@ -27,33 +28,37 @@ function App() {
     },
   });
   return (
-    <QueryClientProvider client={queryClient}>
-      <AppProvider>
-        <Router>
-          <Switch>
-            <ProtectedRoute path="/" exact>
-              <RoomsPage />
-            </ProtectedRoute>
-            <Route path="/login" component={LoginPage} />
-            <Route path="/register" component={RegisterPage} />
-            <ProtectedRoute path="/classrooms/:id/join">
-              <JoinClassPage />
-            </ProtectedRoute>
-            <ProtectedRoute path="/classrooms/:id/grade-structure">
-              <GradeStructurePage />
-            </ProtectedRoute>
-            <ProtectedRoute path="/classrooms/:id">
-              <RoomDetailsPage />
-            </ProtectedRoute>
-            <ProtectedRoute path="/user/profile">
-              <ProfilePage />
-            </ProtectedRoute>
-            <Route path="*" component={ErrorPage} />
-          </Switch>
-        </Router>
-      </AppProvider>
-      <ReactQueryDevtools initialIsOpen={false} />
-    </QueryClientProvider>
+    <>
+      <QueryClientProvider client={queryClient}>
+        <AppProvider>
+          <Router>
+            <Switch>
+              <ProtectedRoute path="/" exact>
+                <RoomsPage />
+              </ProtectedRoute>
+              <Route path="/login" component={LoginPage} />
+              <Route path="/register" component={RegisterPage} />
+              <ProtectedRoute path="/classrooms/:id/join">
+                <JoinClassPage />
+              </ProtectedRoute>
+              <ProtectedRoute path="/classrooms/:id/grade-structure">
+                <GradeStructurePage />
+              </ProtectedRoute>
+
+              <ProtectedRoute path="/classrooms/:id">
+                <RoomDetailsPage />
+              </ProtectedRoute>
+              <ProtectedRoute path="/user/profile">
+                <ProfilePage />
+              </ProtectedRoute>
+              <Route path="*" component={ErrorPage} />
+            </Switch>
+          </Router>
+        </AppProvider>
+        <ReactQueryDevtools initialIsOpen={false} />
+      </QueryClientProvider>
+      <ToastContainer />
+    </>
   );
 }
 

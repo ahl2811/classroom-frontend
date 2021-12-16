@@ -44,7 +44,7 @@ export const OptionMenu = styled.div<{ menuCenter?: boolean }>`
   line-height: 32px;
   min-width: 160px;
   background-clip: padding-box;
-  z-index: 9999;
+  z-index: 99;
 
   ${(props) =>
     props.menuCenter &&

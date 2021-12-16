@@ -16,7 +16,7 @@ import {
 } from "../grade-structure/api";
 import { getRoomDetail } from "./api";
 import InfoNotify from "./components/InfoNotify";
-import { PostNotifyCard } from "./style";
+import { PostNotifyCard, RoomDetailsStyle } from "./style";
 
 const NewsPage = () => {
   const { user } = useUserContext();
@@ -49,7 +49,7 @@ const NewsPage = () => {
   }
 
   return (
-    <>
+    <RoomDetailsStyle>
       <Row className="d-flex align-items-end rounded justify-content-between flex-column g-0 banner notify-item">
         <div className="d-flex flex-row justify-content-end">
           {isTeacher && (
@@ -165,7 +165,7 @@ const NewsPage = () => {
           </PostNotifyCard>
         </Col>
       </Row>
-    </>
+    </RoomDetailsStyle>
   );
 };
 
