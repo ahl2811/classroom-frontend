@@ -5,14 +5,17 @@ import Options from "../../components/options";
 import { OptionItem } from "../../components/options/style";
 import CSVUploader from "./components/CSVUploader";
 import { GradesPageStyle, GradeTable } from "./style";
-import { createTemplate, exportData, STUDENT_ID } from "./utils";
+import { createTemplate, exportData, NAME, STUDENT_ID } from "./utils";
+
+const initialObject = { [`${STUDENT_ID}`]: "", [`${NAME}`]: "", "Grade 1": "" };
 
 const GradesPage = () => {
-  const [grades, setGrades] = useState<any[]>([
-    { studentId: "", name: "", "grade a": 0 },
-  ]);
+  const [grades, setGrades] = useState<any[] | undefined>();
 
-  const keysOfGrade = useMemo(() => [...Object.keys(grades[0])], [grades]);
+  const keysOfGrade = useMemo(
+    () => [...Object.keys(grades ? grades[0] : initialObject)],
+    [grades]
+  );
   console.log(keysOfGrade);
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -56,7 +59,7 @@ const GradesPage = () => {
                     <OptionItem>
                       <CSVDownloader
                         filename={column.id}
-                        data={exportData(grades, column.id)}
+                        data={exportData(grades || [{}], column.id)}
                       >
                         <i className="bi bi-cloud-download me-3" />
                         Export{" "}
@@ -66,7 +69,7 @@ const GradesPage = () => {
                     <OptionItem>
                       <CSVDownloader
                         filename={column.id}
-                        data={createTemplate(column.id)}
+                        data={createTemplate(grades || [{}], column.id)}
                       >
                         <i className="bi bi-download me-3" />
                         Download Template
@@ -93,7 +96,7 @@ const GradesPage = () => {
     );
   };
 
-  const BTable = ({ columns, data }: { columns: any; data: any }) => {
+  const BTable = ({ columns, data }: { columns: any; data: any[] }) => {
     const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } =
       useTable({ columns, data });
     return (
@@ -137,7 +140,7 @@ const GradesPage = () => {
       <CSVDownloader data={grades} filename="GradeBoard" className="export-btn">
         Export Grades
       </CSVDownloader>
-      <BTable columns={columns} data={grades} />
+      <BTable columns={columns} data={grades || [initialObject]} />
     </GradesPageStyle>
   );
 };
