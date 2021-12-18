@@ -2,6 +2,7 @@ import { jsonToCSV } from "react-papaparse";
 
 export const STUDENT_ID = "studentId";
 export const NAME = "name";
+export const TOTAL = "totalGrade";
 
 export const createTemplate = (data: any[], id: string) => {
   const newData = data.map((d) => ({

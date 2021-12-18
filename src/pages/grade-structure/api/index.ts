@@ -11,7 +11,6 @@ export const getGradeStructures = async (id: string) => {
     `/classrooms/${id}/grade-structures?edit=true`,
     getAuthorization()
   );
-  console.log(data);
   return data;
 };
 
@@ -89,7 +88,7 @@ export const updateGradeOrder = async ({
   order: number;
 }) => {
   const { data } = await request.patch<IGradeStructure>(
-    `/classrooms/${roomId}/grade-structures/${gradeId}/order`,
+    `/classrooms/${roomId}/grade-structures/${gradeId}`,
     {
       order,
     },

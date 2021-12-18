@@ -13,6 +13,7 @@ import { IErrorResponse } from "../../../common/types";
 import { toastError } from "../../../common/utils";
 import LoadingButton from "../../../components/LoadingButton";
 import { IconButtonStyle } from "../../../components/style";
+import { DefaultGradeKeys } from "../../grades";
 import { IGradeStructure, updateGradeStruture } from "../api";
 
 interface IProps {
@@ -65,6 +66,10 @@ const ModalUpdateGrade = ({
     e.preventDefault();
     if (isNaN(grade)) {
       toast.error("Invalid data", { position: "top-center" });
+      return;
+    }
+    if (DefaultGradeKeys.includes(name)) {
+      toast.error("Please use another name", { position: "top-center" });
       return;
     }
     mutateAsync();

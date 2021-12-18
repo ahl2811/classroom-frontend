@@ -1,19 +1,37 @@
 import React, { useState } from "react";
-import { Button, Offcanvas } from "react-bootstrap";
+import { Offcanvas } from "react-bootstrap";
 import { CSVReader } from "react-papaparse";
+import { useMutation, useQueryClient } from "react-query";
 import { toast } from "react-toastify";
+import { IErrorResponse } from "../../../common/types";
+import { toastError } from "../../../common/utils";
+import LoadingButton from "../../../components/LoadingButton";
+import { uploadStudentList } from "../api";
 import { STUDENT_ID } from "../utils";
 
 interface IProps {
   onClose: () => void;
   show: boolean;
   id: string;
-  onSubmitGrades: (value: any[]) => void;
+  roomId: string;
 }
 
-const CSVUploader = ({ onClose, show, id, onSubmitGrades }: IProps) => {
+const CSVUploader = ({ onClose, show, id, roomId }: IProps) => {
   const [listData, setListData] = useState<any[]>([]);
   const template = `[${STUDENT_ID} - ${id}]`;
+  const queryClient = useQueryClient();
+  const { isLoading, mutateAsync } = useMutation(
+    "upload-student-list",
+    uploadStudentList,
+    {
+      onSuccess: () => {
+        queryClient.invalidateQueries(["grades", roomId]);
+      },
+      onError: (err: IErrorResponse) => {
+        toastError(err);
+      },
+    }
+  );
 
   const handleClose = () => {
     setListData([]);
@@ -21,8 +39,7 @@ const CSVUploader = ({ onClose, show, id, onSubmitGrades }: IProps) => {
   };
 
   const handleSubmit = () => {
-    console.log("list" + id, listData);
-    onSubmitGrades(listData);
+    mutateAsync({ id: roomId, list: listData });
   };
 
   const handleOnRemoveFile = () => {
@@ -30,11 +47,9 @@ const CSVUploader = ({ onClose, show, id, onSubmitGrades }: IProps) => {
   };
 
   const handleOnDrop = (data: any) => {
-    console.log(data);
     if (data && data.length > 0) {
       const firstData = data[0].data;
       if (STUDENT_ID in firstData && id in firstData) {
-        console.log("Valid");
         setListData(data.map((d: { data: any }) => d.data));
         return;
       }
@@ -43,7 +58,13 @@ const CSVUploader = ({ onClose, show, id, onSubmitGrades }: IProps) => {
         type: "error",
       });
       handleOnRemoveFile();
+      return;
     }
+    toast(`No data in CSV file with template ${template}`, {
+      position: "bottom-left",
+      type: "error",
+    });
+    handleOnRemoveFile();
   };
 
   const handleOnError = (err: any) => {
@@ -88,14 +109,15 @@ const CSVUploader = ({ onClose, show, id, onSubmitGrades }: IProps) => {
             <span>Drop CSV file here or click to upload.</span>
           </CSVReader>
 
-          <Button
+          <LoadingButton
             variant="light"
             className="mt-2"
             onClick={handleSubmit}
             disabled={listData?.length === 0}
+            isLoading={isLoading}
           >
             Submit
-          </Button>
+          </LoadingButton>
         </Offcanvas.Body>
       </Offcanvas>
     </>

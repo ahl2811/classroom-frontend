@@ -1,28 +1,49 @@
 import { useMemo, useState } from "react";
 import { CSVDownloader } from "react-papaparse";
+import { useQuery } from "react-query";
+import { useHistory, useParams } from "react-router-dom";
 import { HeaderGroup, useTable } from "react-table";
+import { IErrorResponse } from "../../common/types";
 import Options from "../../components/options";
 import { OptionItem } from "../../components/options/style";
+import { getGradeBoard } from "./api";
 import CSVUploader from "./components/CSVUploader";
 import { GradesPageStyle, GradeTable } from "./style";
-import { createTemplate, exportData, NAME, STUDENT_ID } from "./utils";
+import { createTemplate, exportData, NAME, STUDENT_ID, TOTAL } from "./utils";
+import { toastError } from "../../common/utils";
 
-const initialObject = { [`${STUDENT_ID}`]: "", [`${NAME}`]: "", "Grade 1": "" };
+const initialObject = { [`${STUDENT_ID}`]: "", [`${NAME}`]: "" };
+export const DefaultGradeKeys = [STUDENT_ID, NAME, "totalGrade", "userId"];
 
 const GradesPage = () => {
-  const [grades, setGrades] = useState<any[] | undefined>();
+  const { id: roomId } = useParams<{ id: string }>();
+  const history = useHistory();
+  const { data: grades } = useQuery(
+    ["grades", roomId],
+    () => getGradeBoard(roomId),
+    {
+      onError: (err: IErrorResponse) => {
+        if (err.response.data.statusCode === 403) {
+          toastError(err);
+          history.push("/");
+        }
+      },
+    }
+  );
 
   const keysOfGrade = useMemo(
-    () => [...Object.keys(grades ? grades[0] : initialObject)],
+    () =>
+      [...Object.keys(grades ? grades[0] : initialObject)].filter(
+        (e) => e !== "userId"
+      ),
     [grades]
   );
   console.log(keysOfGrade);
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const columns = useMemo(
     () =>
       keysOfGrade.map((key) => ({
-        Header: key.toUpperCase(), //gradestruct.name
+        Header: key,
         accessor: key, // accessor is the "key" in the data
       })),
     [keysOfGrade]
@@ -42,7 +63,10 @@ const GradesPage = () => {
         {headerGroups.map((headerGroup) => (
           <tr {...headerGroup.getHeaderGroupProps()}>
             {headerGroup.headers.map((column) => (
-              <th {...column.getHeaderProps()} className="position-relative">
+              <th
+                {...column.getHeaderProps()}
+                className="position-relative text-capitalize"
+              >
                 {column.render("Header")}
                 {column.id !== STUDENT_ID && (
                   <Options
@@ -51,35 +75,41 @@ const GradesPage = () => {
                     }
                     className="position-absolute top-0 end-0 fw-normal"
                   >
-                    <OptionItem onClick={() => handleClickUpload(column.id)}>
-                      <i className="bi bi-upload me-3" />
-                      Import{" "}
-                      <span className="text-capitalize">{column.id}</span>
-                    </OptionItem>
+                    {column.id !== TOTAL && (
+                      <OptionItem onClick={() => handleClickUpload(column.id)}>
+                        <i className="bi bi-upload me-3" />
+                        Import {column.id}
+                      </OptionItem>
+                    )}
                     <OptionItem>
                       <CSVDownloader
                         filename={column.id}
                         data={exportData(grades || [{}], column.id)}
                       >
                         <i className="bi bi-cloud-download me-3" />
-                        Export{" "}
-                        <span className="text-capitalize">{column.id}</span>
+                        Export {column.id}
                       </CSVDownloader>
                     </OptionItem>
-                    <OptionItem>
-                      <CSVDownloader
-                        filename={column.id}
-                        data={createTemplate(grades || [{}], column.id)}
-                      >
-                        <i className="bi bi-download me-3" />
-                        Download Template
-                      </CSVDownloader>
-                    </OptionItem>
-                    <hr className="border-1 border-top border-secondary my-2" />
-                    <OptionItem>
-                      <i className="bi bi-check2-square me-3" />
-                      Mark Finalized
-                    </OptionItem>
+                    {column.id !== TOTAL && (
+                      <OptionItem>
+                        <CSVDownloader
+                          filename={column.id}
+                          data={createTemplate(grades || [{}], column.id)}
+                        >
+                          <i className="bi bi-download me-3" />
+                          Download Template
+                        </CSVDownloader>
+                      </OptionItem>
+                    )}
+                    {!DefaultGradeKeys.includes(column.id) && (
+                      <>
+                        <hr className="border-1 border-top border-secondary my-2" />
+                        <OptionItem>
+                          <i className="bi bi-check2-square me-3" />
+                          Mark Finalized
+                        </OptionItem>
+                      </>
+                    )}
                   </Options>
                 )}
               </th>
@@ -90,7 +120,7 @@ const GradesPage = () => {
           show={showUpload}
           onClose={() => setShowUpload(false)}
           id={id}
-          onSubmitGrades={setGrades}
+          roomId={roomId}
         />
       </thead>
     );
@@ -100,7 +130,7 @@ const GradesPage = () => {
     const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } =
       useTable({ columns, data });
     return (
-      <GradeTable bordered striped size="xl" {...getTableProps()}>
+      <GradeTable bordered striped {...getTableProps()}>
         <THead headerGroups={headerGroups} />
         <tbody {...getTableBodyProps()}>
           {

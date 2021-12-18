@@ -13,7 +13,7 @@ const LoadingButton = ({
   ...props
 }: IProps) => {
   return (
-    <Button variant="primary" disabled={isLoading} {...props}>
+    <Button variant={variant} disabled={isLoading} {...props}>
       {isLoading ? (
         <>
           <Spinner

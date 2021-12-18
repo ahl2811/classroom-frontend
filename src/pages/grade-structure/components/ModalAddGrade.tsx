@@ -12,6 +12,7 @@ import { GRADE_STRUCTURE } from "../../../common/constants";
 import { IErrorResponse } from "../../../common/types";
 import { toastError } from "../../../common/utils";
 import LoadingButton from "../../../components/LoadingButton";
+import { DefaultGradeKeys } from "../../grades";
 import { addGradeStruture, IGradeStructure } from "../api";
 
 interface IProps {
@@ -53,6 +54,10 @@ const ModalAddGrade = ({ roomId }: IProps) => {
     e.preventDefault();
     if (isNaN(grade)) {
       toast.error("Invalid data", { position: "top-center" });
+      return;
+    }
+    if (DefaultGradeKeys.includes(name)) {
+      toast.error("Please use another name", { position: "top-center" });
       return;
     }
     mutateAsync();
