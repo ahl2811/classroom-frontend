@@ -21,3 +21,12 @@ export const exportData = (data: any[], id: string) => {
   const res = jsonToCSV(newData);
   return res;
 };
+
+export const exportGradeBoard = (data: any[]) => {
+  const cloneData = JSON.parse(JSON.stringify(data));
+  const newData = cloneData.map((d: any) => {
+    delete d.userId;
+    return d;
+  });
+  return newData;
+};

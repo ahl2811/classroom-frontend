@@ -5,6 +5,11 @@ export interface IStudenList {
   name: string;
 }
 
+export interface IGradeList {
+  studentId: string;
+  grade: number;
+}
+
 export const getGradeBoard = async (id: string) => {
   const { data } = await request.get<any[]>(
     `/classrooms/${id}/grade-board`,
@@ -21,6 +26,35 @@ export const uploadStudentList = async (params: {
   const { data } = await request.post<any[]>(
     `/classrooms/${id}/student-list`,
     list,
+    getAuthorization()
+  );
+  return data;
+};
+
+export const uploadGrade = async (params: {
+  roomId: string;
+  gradeName: string;
+  list: IGradeList[];
+}) => {
+  const { roomId, gradeName, list } = params;
+  const { data } = await request.patch<any[]>(
+    `/classrooms/${roomId}/grades/${gradeName}`,
+    list,
+    getAuthorization()
+  );
+  return data;
+};
+
+export const updateGrade = async (params: {
+  grade?: number;
+  roomId: string;
+  gradeName: string;
+  studentId: string;
+}) => {
+  const { grade, roomId, gradeName, studentId } = params;
+  const { data } = await request.patch<any[]>(
+    `/classrooms/${roomId}/grades/${gradeName}`,
+    { studentId, grade },
     getAuthorization()
   );
   return data;

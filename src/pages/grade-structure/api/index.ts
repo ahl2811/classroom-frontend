@@ -4,6 +4,7 @@ export interface IGradeStructure {
   id: string;
   name: string;
   grade: number;
+  isFinalize: boolean;
 }
 
 export const getGradeStructures = async (id: string) => {

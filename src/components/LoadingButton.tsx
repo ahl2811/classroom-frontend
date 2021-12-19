@@ -22,7 +22,7 @@ const LoadingButton = ({
             size="sm"
             role="status"
             aria-hidden="true"
-          />
+          />{" "}
           Please wait...
         </>
       ) : (

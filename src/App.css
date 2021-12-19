@@ -19,3 +19,11 @@ a {
 .text-small {
   font-size: 14px;
 }
+
+.classroom-link {
+  color: teal;
+}
+
+.classroom-link:hover {
+  text-decoration: underline;
+}
