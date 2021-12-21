@@ -3,6 +3,7 @@ import { Offcanvas } from "react-bootstrap";
 import { CSVReader } from "react-papaparse";
 import { useMutation, useQueryClient } from "react-query";
 import { toast } from "react-toastify";
+import { GRADE_STRUCTURE } from "../../../common/constants";
 import { IErrorResponse } from "../../../common/types";
 import { toastError } from "../../../common/utils";
 import LoadingButton from "../../../components/LoadingButton";
@@ -27,6 +28,7 @@ const StudentListUploader = ({ onClose, show, id, roomId }: IProps) => {
     {
       onSuccess: () => {
         queryClient.invalidateQueries(["grades", roomId]);
+        queryClient.invalidateQueries([GRADE_STRUCTURE.GET, roomId]);
       },
       onError: (err: IErrorResponse) => {
         toastError(err);

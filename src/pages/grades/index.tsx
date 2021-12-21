@@ -46,8 +46,6 @@ const GradesPage = () => {
     getGradeStructures(roomId)
   );
 
-  console.log("grade-struc", gradeStructure);
-
   const keysOfGrade = useMemo(
     () => [...Object.keys(grades ? grades[0] : initialObject)],
     [grades]
@@ -157,15 +155,18 @@ const GradesPage = () => {
                             Import {column.id}
                           </OptionItem>
                         )}
-                        <OptionItem>
-                          <CSVDownloader
-                            filename={column.id}
-                            data={exportData(grades || [{}], column.id)}
-                          >
-                            <i className="bi bi-cloud-download me-3" />
-                            Export {column.id}
-                          </CSVDownloader>
-                        </OptionItem>
+                        {grades && (
+                          <OptionItem>
+                            <CSVDownloader
+                              filename={column.id}
+                              data={exportData(grades || [{}], column.id)}
+                            >
+                              <i className="bi bi-cloud-download me-3" />
+                              Export {column.id}
+                            </CSVDownloader>
+                          </OptionItem>
+                        )}
+
                         {column.id !== TOTAL && (
                           <OptionItem>
                             <CSVDownloader
@@ -238,7 +239,6 @@ const GradesPage = () => {
                             {...cell.getCellProps()}
                             className={cell.column.id}
                           >
-                            {console.log("Cell", cell.column.id)}
                             {
                               // Render the cell contents
                               cell.render("Cell")
@@ -269,7 +269,7 @@ const GradesPage = () => {
         </CSVDownloader>
       ) : (
         <p className="text-secondary cursor-pointer user-select-none">
-          Export Grades
+          Student list is empty. Please click option button to upload.
         </p>
       )}
 

@@ -49,6 +49,9 @@ const GradeInfo = ({
     onSettled: () => {
       queryClient.invalidateQueries(["grades", roomId]);
     },
+    onSuccess: () => {
+      queryClient.invalidateQueries([GRADE_STRUCTURE.GET, roomId]);
+    },
   });
 
   const { mutateAsync: markFinalize } = useMutation(markFinalizeStudent, {

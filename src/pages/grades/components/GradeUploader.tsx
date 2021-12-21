@@ -3,6 +3,7 @@ import { Offcanvas } from "react-bootstrap";
 import { CSVReader } from "react-papaparse";
 import { useMutation, useQueryClient } from "react-query";
 import { toast } from "react-toastify";
+import { GRADE_STRUCTURE } from "../../../common/constants";
 import { IErrorResponse } from "../../../common/types";
 import { toastError } from "../../../common/utils";
 import LoadingButton from "../../../components/LoadingButton";
@@ -24,6 +25,7 @@ const GradeUploader = ({ onClose, show, id, roomId }: IProps) => {
   const { isLoading, mutateAsync } = useMutation(uploadGrade, {
     onSuccess: () => {
       queryClient.invalidateQueries(["grades", roomId]);
+      queryClient.invalidateQueries([GRADE_STRUCTURE.GET, roomId]);
     },
     onError: (err: IErrorResponse) => {
       toastError(err);
@@ -52,7 +54,6 @@ const GradeUploader = ({ onClose, show, id, roomId }: IProps) => {
           [`${STUDENT_ID}`]: d[`${STUDENT_ID}`],
           grade: Number(d[id]),
         }));
-        console.log("gradeData", gradeData);
         setListData(gradeData);
         return;
       }
