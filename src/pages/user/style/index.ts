@@ -9,7 +9,11 @@ export const ProfilePageStyle = styled(PageContainer)`
     border: 0;
     border-bottom: solid 1px #ddd;
     border-radius: 16px;
-    margin: 0 auto;
+    margin: 20px auto;
+
+    &.mt-10 {
+      margin-top: 40px;
+    }
   }
 
   .profile-banner {
@@ -27,6 +31,7 @@ export const ProfilePageStyle = styled(PageContainer)`
   }
 
   .profile-email {
+    padding-top: 12px;
     color: #333;
   }
 
@@ -38,11 +43,13 @@ export const ProfilePageStyle = styled(PageContainer)`
     border-radius: 20px;
     padding: 8px;
     font-size: 15px;
+    outline: none !important;
     text-align: center;
 
-    &:focus {
-      outline: none !important;
-      border: solid 1px #6dd5ed;
+    &.active {
+      &:focus {
+        border: solid 1px #6dd5ed;
+      }
     }
   }
 
@@ -55,14 +62,18 @@ export const ProfilePageStyle = styled(PageContainer)`
     font-size: 32px;
     text-align: center;
     max-width: 100%;
+    outline: none !important;
 
-    &:hover {
-      background: #fafafa;
+    &.active {
+      &:hover {
+        background: #fafafa;
+      }
     }
 
-    &:focus {
-      outline: none !important;
-      border: solid 1px #6dd5ed;
+    &.active {
+      &:focus {
+        border: solid 1px #6dd5ed;
+      }
     }
   }
 

@@ -30,14 +30,15 @@ const ModalUpdateGrade = ({
   gradeId,
 }: IProps) => {
   const [name, setName] = useState<string>(gradeName);
-  const [grade, setGrade] = useState<number>(gradePoints);
+  const [grade, setGrade] = useState<any>(gradePoints);
   const [showModal, setShowModal] = useState(false);
 
   const queryClient = useQueryClient();
 
   const { isLoading, mutateAsync } = useMutation<any, IErrorResponse>(
     "update-grade-structure",
-    () => updateGradeStruture({ id: roomId, name, grade, gradeId }),
+    () =>
+      updateGradeStruture({ id: roomId, name, grade: Number(grade), gradeId }),
     {
       onSuccess: (data) => {
         queryClient.setQueryData<IGradeStructure[]>(
@@ -65,7 +66,7 @@ const ModalUpdateGrade = ({
   const handleAddNew = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (isNaN(grade)) {
-      toast.error("Invalid data", { position: "top-center" });
+      toast.error("Points must be a number", { position: "top-center" });
       return;
     }
     if (DefaultGradeKeys.includes(name)) {
@@ -98,10 +99,9 @@ const ModalUpdateGrade = ({
               <FormControl
                 placeholder="Input grade points"
                 value={grade}
-                onChange={(e) => setGrade(+e.target.value)}
+                onChange={(e) => setGrade(e.target.value)}
                 required
                 min={0}
-                type="number"
               />
             </FloatingLabel>
           </Modal.Body>

@@ -1,20 +1,44 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Button, Image, Spinner } from "react-bootstrap";
-import { useMutation } from "react-query";
-import { toast, ToastContainer } from "react-toastify";
+import { useMutation, useQuery } from "react-query";
+import { useHistory, useParams } from "react-router-dom";
+import { toast } from "react-toastify";
 import { USER } from "../../common/constants";
 import { IErrorResponse, IUser } from "../../common/types";
 import { getAvatarUrl, toastError } from "../../common/utils";
+import DisplayByStatus from "../../components/DisplayByStatus";
 import Header from "../../components/header";
 import useUserContext from "../../hooks/useUserContext";
 import { LoginSuccess } from "../../store/actions";
-import { updateUserInfo } from "./api";
+import { getUser, updateUserInfo } from "./api";
 import { ProfilePageStyle } from "./style";
 
 const ProfilePage = () => {
-  const { user, dispatch } = useUserContext();
-  const [studentId, setStudentId] = useState<string>(user?.studentId || "");
-  const [name, setname] = useState<string>(user?.name || "");
+  const { id: userId } = useParams<{ id: string }>();
+  const { push } = useHistory();
+  const { user: userInfo, dispatch } = useUserContext();
+  const {
+    isLoading: getUserLoading,
+    data: user,
+    error,
+  } = useQuery(["user", userId], () => getUser(userId), {
+    onError: (err: IErrorResponse) => {
+      if (err.response.data.statusCode === 401) {
+        toastError(err);
+        push("/");
+      }
+    },
+  });
+
+  const isMine = userInfo && userInfo.id === user?.id;
+
+  const [studentId, setStudentId] = useState<string>("");
+  const [name, setname] = useState<string>("");
+
+  useEffect(() => {
+    setStudentId(user?.studentId || "");
+    setname(user?.name || "");
+  }, [user]);
 
   const { isLoading, mutateAsync } = useMutation(
     USER.UPDATE_PROFILE,
@@ -23,7 +47,7 @@ const ProfilePage = () => {
       onSuccess: (data) => {
         const newUserInfo: IUser = {
           ...data,
-          accessToken: user?.accessToken,
+          accessToken: userInfo?.accessToken,
           avatar: user?.avatar || getAvatarUrl(`${data.name}`),
         };
         dispatch(LoginSuccess(newUserInfo));
@@ -50,16 +74,27 @@ const ProfilePage = () => {
     mutateAsync({ studentId, name });
   };
 
+  if (error || getUserLoading) {
+    return (
+      <>
+        <Header />
+        <DisplayByStatus
+          error={error as IErrorResponse}
+          isLoading={getUserLoading}
+        />
+      </>
+    );
+  }
+
   return (
     <>
       <Header />
-      <ToastContainer />
       <ProfilePageStyle>
-        <div className="profile-container">
+        <div className={`profile-container ${!isMine ? "mt-10" : ""}`}>
           <div className="profile-banner position-relative">
             <Image
               height={128}
-              src={user?.avatar}
+              src={user?.avatar || getAvatarUrl(`${user?.name}`)}
               roundedCircle
               alt="logo"
               className="profile-avatar mb-2"
@@ -69,7 +104,8 @@ const ProfilePage = () => {
             <input
               value={name}
               onChange={(e) => setname(e.target.value)}
-              className="profile-name"
+              className={`profile-name ${isMine ? " active" : ""}`}
+              readOnly={!isMine}
             />
             <p className="profile-email">
               <i className="bi bi-envelope me-2" />
@@ -78,28 +114,31 @@ const ProfilePage = () => {
           </div>
           <div className="d-flex flex-column align-items-center">
             <input
-              className="profile-student-id"
+              className={`profile-student-id ${isMine ? " active" : ""}`}
               placeholder="Input your student ID"
               value={studentId}
               onChange={(e) => setStudentId(e.target.value)}
               required
+              readOnly={!isMine}
             />
-            <Button className="classroom-btn" onClick={handleUpdate}>
-              {isLoading ? (
-                <>
-                  <Spinner
-                    as="span"
-                    animation="border"
-                    size="sm"
-                    role="status"
-                    aria-hidden="true"
-                  />
-                  Please wait...
-                </>
-              ) : (
-                <>Update</>
-              )}
-            </Button>
+            {isMine && (
+              <Button className="classroom-btn" onClick={handleUpdate}>
+                {isLoading ? (
+                  <>
+                    <Spinner
+                      as="span"
+                      animation="border"
+                      size="sm"
+                      role="status"
+                      aria-hidden="true"
+                    />
+                    Please wait...
+                  </>
+                ) : (
+                  <>Update</>
+                )}
+              </Button>
+            )}
           </div>
         </div>
       </ProfilePageStyle>

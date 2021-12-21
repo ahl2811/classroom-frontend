@@ -12,3 +12,8 @@ export const updateUserInfo = async (userInfo: {
   );
   return data;
 };
+
+export const getUser = async (id: string) => {
+  const { data } = await request.get<IUser>("/user/" + id, getAuthorization());
+  return data;
+};

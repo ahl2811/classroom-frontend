@@ -44,9 +44,11 @@ function App() {
               <ProtectedRoute path="/classrooms/:id/grade-structure">
                 <GradeStructurePage />
               </ProtectedRoute>
-
               <ProtectedRoute path="/classrooms/:id">
                 <RoomDetailsPage />
+              </ProtectedRoute>
+              <ProtectedRoute path="/user/:id">
+                <ProfilePage />
               </ProtectedRoute>
               <ProtectedRoute path="/user/profile">
                 <ProfilePage />

@@ -26,7 +26,7 @@ export const GradeTable = styled(Table)`
     &:last-child {
       width: 100%;
     }
-    height: 72px !important;
+    height: 76px !important;
 
     .title {
       color: teal;

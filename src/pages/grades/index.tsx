@@ -1,12 +1,12 @@
 import { useMemo, useState } from "react";
 import { CSVDownloader } from "react-papaparse";
-import { useQuery } from "react-query";
+import { useMutation, useQuery, useQueryClient } from "react-query";
 import { Link, useHistory, useParams } from "react-router-dom";
 import { HeaderGroup, useTable } from "react-table";
 import { IErrorResponse } from "../../common/types";
 import Options from "../../components/options";
 import { OptionItem } from "../../components/options/style";
-import { getGradeBoard } from "./api";
+import { getGradeBoard, markFinalizeColumn } from "./api";
 import CSVUploader from "./components/CSVUploader";
 import { GradesPageStyle, GradeTable } from "./style";
 import {
@@ -46,11 +46,10 @@ const GradesPage = () => {
     getGradeStructures(roomId)
   );
 
+  console.log("grade-struc", gradeStructure);
+
   const keysOfGrade = useMemo(
-    () =>
-      [...Object.keys(grades ? grades[0] : initialObject)].filter(
-        (e) => e !== "userId"
-      ),
+    () => [...Object.keys(grades ? grades[0] : initialObject)],
     [grades]
   );
 
@@ -64,14 +63,17 @@ const GradesPage = () => {
           const values = cell.row.values;
           const value = cell.value;
 
-          if (id === NAME) {
-            return !values.userId ? (
+          if (id === STUDENT_ID) {
+            return values.userId ? (
               <Link to={`/user/${cell.row.values.userId}`}>
                 <span className="classroom-link">{value}</span>
               </Link>
             ) : (
               value
             );
+          }
+          if (id === "userId") {
+            return "";
           }
           if (!DefaultGradeKeys.includes(id)) {
             return (
@@ -80,6 +82,7 @@ const GradesPage = () => {
                 grade={value || undefined}
                 roomId={roomId}
                 studentId={values.studentId}
+                isFinalize={values[`isFinalize-${id}`]}
               />
             );
           }
@@ -93,6 +96,21 @@ const GradesPage = () => {
     const [showUpload, setShowUpload] = useState(false);
     const [id, setId] = useState<string>("");
 
+    const queryClient = useQueryClient();
+    const { mutateAsync } = useMutation(markFinalizeColumn, {
+      onError: (err: IErrorResponse) => {
+        toastError(err);
+      },
+      onSuccess: () => {
+        queryClient.invalidateQueries([GRADE_STRUCTURE.GET, roomId]);
+        queryClient.invalidateQueries(["grades", roomId]);
+      },
+    });
+
+    const handleMarkFinalize = (gradeName: string) => {
+      mutateAsync({ gradeName, roomId });
+    };
+
     const handleClickUpload = (id: string) => {
       setId(id);
       setShowUpload(!showUpload);
@@ -102,71 +120,79 @@ const GradesPage = () => {
       <thead>
         {headerGroups.map((headerGroup) => (
           <tr {...headerGroup.getHeaderGroupProps()}>
-            {headerGroup.headers.map((column) => {
-              const gradeStruc = gradeStructure?.find(
-                (g) => g.name === column.id
-              );
-              return (
-                <th
-                  {...column.getHeaderProps()}
-                  className="position-relative text-capitalize"
-                >
-                  <span className="title">{column.render("Header")}</span>
-                  {!DefaultGradeKeys.includes(column.id) &&
-                    gradeStruc?.isFinalize && (
-                      <div className="text-small position-absolute top-0 start-0 mt-2 ms-2 fw-normal fst-italic">
-                        Finalize
-                      </div>
-                    )}
-                  {column.id !== STUDENT_ID && (
-                    <Options
-                      icon={
-                        <i className="bi bi-three-dots-vertical icon fs-5 fw-bold title" />
-                      }
-                      className="position-absolute top-0 end-0 fw-normal"
-                    >
-                      {column.id !== TOTAL && (
-                        <OptionItem
-                          onClick={() => handleClickUpload(column.id)}
-                        >
-                          <i className="bi bi-upload me-3" />
-                          Import {column.id}
-                        </OptionItem>
+            {headerGroup.headers
+              .filter(
+                (column) =>
+                  column.id !== "userId" &&
+                  !String(column.id).startsWith("isFinalize")
+              )
+              .map((column) => {
+                const gradeStruc = gradeStructure?.find(
+                  (g) => g.name === column.id
+                );
+                return (
+                  <th
+                    {...column.getHeaderProps()}
+                    className="position-relative text-capitalize"
+                  >
+                    <span className="title">{column.render("Header")}</span>
+                    {!DefaultGradeKeys.includes(column.id) &&
+                      gradeStruc?.isFinalize && (
+                        <div className="text-small position-absolute top-0 start-0 mt-2 ms-2 fw-normal fst-italic">
+                          Finalized
+                        </div>
                       )}
-                      <OptionItem>
-                        <CSVDownloader
-                          filename={column.id}
-                          data={exportData(grades || [{}], column.id)}
-                        >
-                          <i className="bi bi-cloud-download me-3" />
-                          Export {column.id}
-                        </CSVDownloader>
-                      </OptionItem>
-                      {column.id !== TOTAL && (
+                    {column.id !== STUDENT_ID && (
+                      <Options
+                        icon={
+                          <i className="bi bi-three-dots-vertical icon fs-5 fw-bold title" />
+                        }
+                        className="position-absolute top-0 end-0 fw-normal"
+                      >
+                        {column.id !== TOTAL && (
+                          <OptionItem
+                            onClick={() => handleClickUpload(column.id)}
+                          >
+                            <i className="bi bi-upload me-3" />
+                            Import {column.id}
+                          </OptionItem>
+                        )}
                         <OptionItem>
                           <CSVDownloader
                             filename={column.id}
-                            data={createTemplate(grades || [{}], column.id)}
+                            data={exportData(grades || [{}], column.id)}
                           >
-                            <i className="bi bi-download me-3" />
-                            Download Template
+                            <i className="bi bi-cloud-download me-3" />
+                            Export {column.id}
                           </CSVDownloader>
                         </OptionItem>
-                      )}
-                      {!DefaultGradeKeys.includes(column.id) && (
-                        <>
-                          <hr className="border-1 border-top border-secondary my-2" />
+                        {column.id !== TOTAL && (
                           <OptionItem>
-                            <i className="bi bi-check2-square me-3" />
-                            Mark Finalized
+                            <CSVDownloader
+                              filename={column.id}
+                              data={createTemplate(grades || [{}], column.id)}
+                            >
+                              <i className="bi bi-download me-3" />
+                              Download Template
+                            </CSVDownloader>
                           </OptionItem>
-                        </>
-                      )}
-                    </Options>
-                  )}
-                </th>
-              );
-            })}
+                        )}
+                        {!DefaultGradeKeys.includes(column.id) && (
+                          <>
+                            <hr className="border-1 border-top border-secondary my-2" />
+                            <OptionItem
+                              onClick={() => handleMarkFinalize(column.id)}
+                            >
+                              <i className="bi bi-check2-square me-3" />
+                              Mark Finalized
+                            </OptionItem>
+                          </>
+                        )}
+                      </Options>
+                    )}
+                  </th>
+                );
+              })}
             <th></th>
           </tr>
         ))}
@@ -199,17 +225,27 @@ const GradesPage = () => {
                 <tr {...row.getRowProps()}>
                   {
                     // Loop over the rows cells
-                    row.cells.map((cell) => {
-                      // Apply the cell props
-                      return (
-                        <td {...cell.getCellProps()} className={cell.column.id}>
-                          {
-                            // Render the cell contents
-                            cell.render("Cell")
-                          }
-                        </td>
-                      );
-                    })
+                    row.cells
+                      .filter(
+                        (cell) =>
+                          cell.column.id !== "userId" &&
+                          !String(cell.column.id).startsWith("isFinalize-")
+                      )
+                      .map((cell) => {
+                        // Apply the cell props
+                        return (
+                          <td
+                            {...cell.getCellProps()}
+                            className={cell.column.id}
+                          >
+                            {console.log("Cell", cell.column.id)}
+                            {
+                              // Render the cell contents
+                              cell.render("Cell")
+                            }
+                          </td>
+                        );
+                      })
                   }
                   <td></td>
                 </tr>
@@ -223,13 +259,20 @@ const GradesPage = () => {
 
   return (
     <GradesPageStyle fluid>
-      <CSVDownloader
-        data={exportGradeBoard(grades || [initialObject])}
-        filename="GradeBoard"
-        className="export-btn"
-      >
-        Export Grades
-      </CSVDownloader>
+      {grades ? (
+        <CSVDownloader
+          data={exportGradeBoard(grades || [initialObject])}
+          filename="GradeBoard"
+          className="export-btn"
+        >
+          Export Grades
+        </CSVDownloader>
+      ) : (
+        <p className="text-secondary cursor-pointer user-select-none">
+          Export Grades
+        </p>
+      )}
+
       <BTable columns={columns} data={grades || [initialObject]} />
     </GradesPageStyle>
   );

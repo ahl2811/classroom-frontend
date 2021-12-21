@@ -21,7 +21,7 @@ interface IProps {
 
 const ModalAddGrade = ({ roomId }: IProps) => {
   const [name, setName] = useState<string>("");
-  const [grade, setGrade] = useState<number>(0);
+  const [grade, setGrade] = useState<any>();
   const [showModal, setShowModal] = useState(false);
 
   const queryClient = useQueryClient();
@@ -41,7 +41,7 @@ const ModalAddGrade = ({ roomId }: IProps) => {
           }
         );
         setName("");
-        setGrade(0);
+        setGrade("");
         setShowModal(false);
       },
       onError: (error) => {
@@ -53,7 +53,7 @@ const ModalAddGrade = ({ roomId }: IProps) => {
   const handleAddNew = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (isNaN(grade)) {
-      toast.error("Invalid data", { position: "top-center" });
+      toast.error("Points must be a number", { position: "top-center" });
       return;
     }
     if (DefaultGradeKeys.includes(name)) {
@@ -86,15 +86,15 @@ const ModalAddGrade = ({ roomId }: IProps) => {
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 required
+                autoFocus={true}
               />
             </FloatingLabel>
             <FloatingLabel label="Points" className="mt-3">
               <FormControl
                 placeholder="Input grade points"
                 value={grade}
-                onChange={(e) => setGrade(+e.target.value)}
+                onChange={(e) => setGrade(e.target.value)}
                 required
-                type="number"
                 min={0}
               />
             </FloatingLabel>

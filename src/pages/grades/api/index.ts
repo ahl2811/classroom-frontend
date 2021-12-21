@@ -54,7 +54,38 @@ export const updateGrade = async (params: {
   const { grade, roomId, gradeName, studentId } = params;
   const { data } = await request.patch<any[]>(
     `/classrooms/${roomId}/grades/${gradeName}`,
-    { studentId, grade },
+    [{ studentId, grade }],
+    getAuthorization()
+  );
+  return data;
+};
+
+export const markFinalizeColumn = async ({
+  gradeName,
+  roomId,
+}: {
+  roomId: string;
+  gradeName: string;
+}) => {
+  const { data } = await request.patch(
+    `/classrooms/${roomId}/grade-structures/${gradeName}`,
+    {
+      isFinalize: true,
+    },
+    getAuthorization()
+  );
+  return data;
+};
+
+export const markFinalizeStudent = async (params: {
+  roomId: string;
+  gradeName: string;
+  studentId: string;
+}) => {
+  const { roomId, gradeName, studentId } = params;
+  const { data } = await request.patch<any[]>(
+    `/classrooms/${roomId}/grades/${gradeName}`,
+    [{ studentId, isFinalize: true }],
     getAuthorization()
   );
   return data;

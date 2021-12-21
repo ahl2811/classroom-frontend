@@ -3,10 +3,9 @@ import GoogleLogin, {
   GoogleLoginResponse,
   GoogleLoginResponseOffline,
 } from "react-google-login";
-import { ToastContainer } from "react-toastify";
 import { GOOGLE_CLIENT_ID } from "../../../common/constants";
 import { IErrorResponse, ILoginResponse } from "../../../common/types";
-import { request, toastError } from "../../../common/utils";
+import { getAvatarUrl, request, toastError } from "../../../common/utils";
 import useUserContext from "../../../hooks/useUserContext";
 import { LoginSuccess } from "../../../store/actions";
 
@@ -16,12 +15,6 @@ const GoogleLoginButton = () => {
   const handleLoginGoogleSuccess = async (
     response: GoogleLoginResponse | GoogleLoginResponseOffline
   ) => {
-    let avatar: string = "";
-
-    if ("profileObj" in response) {
-      avatar = response.profileObj.imageUrl;
-    }
-
     if ("accessToken" in response) {
       try {
         const { accessToken } = response;
@@ -35,7 +28,7 @@ const GoogleLoginButton = () => {
         if (user && token) {
           const userInfo = {
             ...user,
-            avatar,
+            avatar: getAvatarUrl(`${user?.name}`),
             accessToken: token,
           };
 
@@ -55,7 +48,6 @@ const GoogleLoginButton = () => {
   };
   return (
     <>
-      <ToastContainer />
       <GoogleLogin
         clientId={GOOGLE_CLIENT_ID}
         buttonText="Sign in with Google"

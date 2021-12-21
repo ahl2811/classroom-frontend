@@ -1,9 +1,12 @@
 import React, { useState } from "react";
-import { useMutation } from "react-query";
+import { useMutation, useQueryClient } from "react-query";
 import { toast } from "react-toastify";
+import { GRADE_STRUCTURE } from "../../../common/constants";
+import { IErrorResponse } from "../../../common/types";
+import { toastError } from "../../../common/utils";
 import Options from "../../../components/options";
 import { OptionItem } from "../../../components/options/style";
-import { updateGrade } from "../api";
+import { markFinalizeStudent, updateGrade } from "../api";
 import { GradeInfoStyle } from "../style";
 
 interface IProps {
@@ -11,6 +14,7 @@ interface IProps {
   roomId: string;
   gradeName: string;
   studentId: string;
+  isFinalize: boolean;
 }
 
 const GradeInfo = ({
@@ -18,23 +22,70 @@ const GradeInfo = ({
   roomId,
   gradeName,
   studentId,
+  isFinalize,
 }: IProps) => {
   const [grade, setGrade] = useState<any>(initValue || "");
+  const queryClient = useQueryClient();
 
-  const { mutateAsync, isLoading } = useMutation(updateGrade, {});
+  const { mutateAsync } = useMutation(updateGrade, {
+    onMutate: async (data) => {
+      await queryClient.cancelQueries(["grades", roomId]);
+      const oldData = queryClient.getQueryData<any[]>(["grades", roomId]);
+      if (oldData) {
+        const index = oldData.findIndex((item) => item.studentId === studentId);
+        const newData = [...oldData];
+        newData[index][`${gradeName}`] = data.grade;
+        queryClient.setQueryData(["grades", roomId], newData);
+      }
+      return { oldData };
+    },
+    onError: (err: IErrorResponse, variables, context) => {
+      const ct = context as any;
+      if (ct?.oldData) {
+        queryClient.setQueryData(["grades", roomId], ct.oldData);
+      }
+      toastError(err);
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries(["grades", roomId]);
+    },
+  });
+
+  const { mutateAsync: markFinalize } = useMutation(markFinalizeStudent, {
+    onMutate: async () => {
+      await queryClient.cancelQueries(["grades", roomId]);
+      const oldData = queryClient.getQueryData<any[]>(["grades", roomId]);
+      if (oldData) {
+        const index = oldData.findIndex((item) => item.studentId === studentId);
+        const newData = [...oldData];
+        newData[index][`isFinalize-${gradeName}`] = true;
+        queryClient.setQueryData(["grades", roomId], newData);
+      }
+      return { oldData };
+    },
+    onError: (err: IErrorResponse, variables, context) => {
+      const ct = context as any;
+      if (ct?.oldData) {
+        queryClient.setQueryData(["grades", roomId], ct.oldData);
+      }
+      toastError(err);
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries(["grades", roomId]);
+      queryClient.invalidateQueries([GRADE_STRUCTURE.GET, roomId]);
+    },
+  });
 
   const handleChangeGrade = (value: string) => {
-    if (value.trim() === "") return;
     setGrade(value);
   };
 
   const handleOnBlur = () => {
     const value = Number(grade);
 
-    if (value === Number(initValue)) {
+    if (value === Number(initValue) || (!value && !initValue)) {
       return;
     }
-
     if (isNaN(value) || value < 0) {
       toast.error("Grade must be a positive number", {
         position: "bottom-left",
@@ -42,9 +93,15 @@ const GradeInfo = ({
       setGrade(initValue || "");
       return;
     }
+    if (!String(grade).trim()) {
+      setGrade("");
+    }
+    mutateAsync({ gradeName, roomId, grade: value, studentId });
+    setGrade(value);
+  };
 
-    setGrade(value || "");
-    mutateAsync({ gradeName, grade: value, roomId, studentId });
+  const handleMarkFinalize = () => {
+    markFinalize({ roomId, gradeName, studentId });
   };
 
   return (
@@ -60,7 +117,7 @@ const GradeInfo = ({
           /10
         </div>
         <div className="grade-status mt-1">
-          {isLoading ? "Saving..." : initValue ? "Draft" : ""}
+          {isFinalize ? "Finalized" : initValue ? "Draft" : ""}
         </div>
       </div>
       <div className="grade-info-options">
@@ -70,9 +127,9 @@ const GradeInfo = ({
           }
           className="position-relative"
         >
-          <OptionItem>
-            <i className="bi bi-upload me-3" />
-            Import
+          <OptionItem onClick={handleMarkFinalize}>
+            <i className="bi bi-check-circle me-3" />
+            Mark Finalized
           </OptionItem>
         </Options>
       </div>

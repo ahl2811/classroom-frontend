@@ -84,7 +84,7 @@ export default function Header({
               className="position-relative user mx-2"
               menuCenter={true}
             >
-              <Link to="/user/profile" className="link-item">
+              <Link to={`/user/${user?.id}`} className="link-item">
                 <OptionItem>
                   <i className="bi bi-person-lines-fill fs-5 me-3" /> View
                   profile
