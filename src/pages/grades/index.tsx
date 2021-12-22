@@ -133,7 +133,9 @@ const GradesPage = () => {
                     {...column.getHeaderProps()}
                     className="position-relative text-capitalize"
                   >
-                    <span className="title">{column.render("Header")}</span>
+                    <div className="title text-truncate">
+                      {column.render("Header")}
+                    </div>
                     {!DefaultGradeKeys.includes(column.id) &&
                       gradeStruc?.isFinalize && (
                         <div className="text-small position-absolute top-0 start-0 mt-2 ms-2 fw-normal fst-italic">

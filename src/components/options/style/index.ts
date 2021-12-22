@@ -53,6 +53,8 @@ export const OptionMenu = styled.div<{ menuCenter?: boolean }>`
 
 export const OptionItem = styled.div`
   padding: 0px 16px;
+  max-width: 280px;
+  overflow: hidden;
   &:hover {
     background: #f3f3f3;
     transition: background-color 0.2s linear;
