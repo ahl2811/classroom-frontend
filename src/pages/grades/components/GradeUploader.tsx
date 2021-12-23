@@ -78,6 +78,7 @@ const GradeUploader = ({ onClose, show, id, roomId }: IProps) => {
   const config = {
     header: true,
     skipEmptyLines: true,
+    encoding: "ISO-8859-1",
   };
 
   return (
