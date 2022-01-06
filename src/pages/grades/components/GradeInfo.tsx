@@ -34,7 +34,7 @@ const GradeInfo = ({
       if (oldData) {
         const index = oldData.findIndex((item) => item.studentId === studentId);
         const newData = [...oldData];
-        newData[index][`${gradeName}`] = data.grade;
+        newData[index][`${gradeName}`].grade = data.grade;
         queryClient.setQueryData(["grades", roomId], newData);
       }
       return { oldData };

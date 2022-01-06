@@ -15,6 +15,7 @@ import Options from "../options";
 import { OptionItem } from "../options/style";
 import { HeaderStyle } from "./style";
 import { OffCanvasStyle } from "./style/offcanvas";
+import ModalJoinClass from "../../pages/rooms/components/ModalJoinClass";
 
 interface IHeader {
   roomDetailsNav?: ReactNode;
@@ -28,6 +29,7 @@ export default function Header({
 }: IHeader) {
   const { user, dispatch } = useUserContext();
   const [showRoomCreation, setShowRoomCreation] = useState(false);
+  const [showJoinClass, setShowJoinClass] = useState(false);
   const history = useHistory();
 
   const handleLogout = () => {
@@ -60,7 +62,9 @@ export default function Header({
                     }
                     className="position-relative"
                   >
-                    <OptionItem>Join a class</OptionItem>
+                    <OptionItem onClick={() => setShowJoinClass(true)}>
+                      Join a class
+                    </OptionItem>
                     <OptionItem onClick={() => setShowRoomCreation(true)}>
                       Create new class
                     </OptionItem>
@@ -143,6 +147,11 @@ export default function Header({
       <ModalCreateRoom
         show={showRoomCreation}
         onHide={() => setShowRoomCreation(false)}
+        centered
+      />
+      <ModalJoinClass
+        show={showJoinClass}
+        onHide={() => setShowJoinClass(false)}
         centered
       />
     </HeaderStyle>

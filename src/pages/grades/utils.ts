@@ -7,7 +7,7 @@ export const TOTAL = "totalGrade";
 export const createTemplate = (data: any[], id: string) => {
   const newData = data.map((d) => ({
     [`${STUDENT_ID}`]: d[`${STUDENT_ID}` as typeof d],
-    [`${id}`]: "",
+    grade: "",
   }));
   const res = jsonToCSV(newData);
   return res;
@@ -17,6 +17,15 @@ export const exportData = (data: any[], id: string) => {
   const newData = data.map((d) => ({
     [`${STUDENT_ID}`]: d[`${STUDENT_ID}` as typeof d],
     [`${id}`]: d[`${id}` as typeof d],
+  }));
+  const res = jsonToCSV(newData);
+  return res;
+};
+
+export const exportGrade = (data: any[], id: string) => {
+  const newData = data.map((d) => ({
+    [`${STUDENT_ID}`]: d[`${STUDENT_ID}` as typeof d],
+    [`${id}`]: d[`${id}` as typeof d].grade,
   }));
   const res = jsonToCSV(newData);
   return res;

@@ -48,15 +48,16 @@ const GradeUploader = ({ onClose, show, id, roomId }: IProps) => {
   const handleOnDrop = (data: any) => {
     if (data && data.length > 0) {
       const firstData = data[0].data;
-      if (STUDENT_ID in firstData && id in firstData) {
+      if (STUDENT_ID in firstData && "grade" in firstData) {
         const csvData = data.map((d: { data: any }) => d.data);
         const gradeData = csvData.map((d: any) => ({
           [`${STUDENT_ID}`]: d[`${STUDENT_ID}`],
-          grade: Number(d[id]),
+          grade: Number(d["grade"]),
         }));
         setListData(gradeData);
         return;
       }
+      console.log("data", data);
       toast(`Please upload CSV file with template ${template}`, {
         position: "bottom-left",
         type: "error",

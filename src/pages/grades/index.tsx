@@ -12,6 +12,7 @@ import { GradesPageStyle, GradeTable } from "./style";
 import {
   createTemplate,
   exportData,
+  exportGrade,
   exportGradeBoard,
   NAME,
   STUDENT_ID,
@@ -41,6 +42,8 @@ const GradesPage = () => {
       },
     }
   );
+
+  console.log("grades", grades);
 
   const { data: gradeStructure } = useQuery([GRADE_STRUCTURE.GET, roomId], () =>
     getGradeStructures(roomId)
@@ -77,10 +80,10 @@ const GradesPage = () => {
             return (
               <GradeInfo
                 gradeName={id}
-                grade={value || undefined}
+                grade={value.grade || undefined}
                 roomId={roomId}
                 studentId={values.studentId}
-                isFinalize={values[`isFinalize-${id}`]}
+                isFinalize={value.isFinalize}
               />
             );
           }
@@ -119,11 +122,7 @@ const GradesPage = () => {
         {headerGroups.map((headerGroup) => (
           <tr {...headerGroup.getHeaderGroupProps()}>
             {headerGroup.headers
-              .filter(
-                (column) =>
-                  column.id !== "userId" &&
-                  !String(column.id).startsWith("isFinalize")
-              )
+              .filter((column) => column.id !== "userId")
               .map((column) => {
                 const gradeStruc = gradeStructure?.find(
                   (g) => g.name === column.id
@@ -161,7 +160,11 @@ const GradesPage = () => {
                           <OptionItem>
                             <CSVDownloader
                               filename={column.id}
-                              data={exportData(grades || [{}], column.id)}
+                              data={
+                                [NAME, TOTAL].includes(column.id)
+                                  ? exportData(grades || [{}], column.id)
+                                  : exportGrade(grades || [{}], column.id)
+                              }
                             >
                               <i className="bi bi-cloud-download me-3" />
                               Export {column.id}
@@ -229,11 +232,7 @@ const GradesPage = () => {
                   {
                     // Loop over the rows cells
                     row.cells
-                      .filter(
-                        (cell) =>
-                          cell.column.id !== "userId" &&
-                          !String(cell.column.id).startsWith("isFinalize-")
-                      )
+                      .filter((cell) => cell.column.id !== "userId")
                       .map((cell) => {
                         // Apply the cell props
                         return (
