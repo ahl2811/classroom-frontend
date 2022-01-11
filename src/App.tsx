@@ -8,6 +8,7 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "./App.css";
 import ProtectedRoute from "./components/ProtectedRoute";
+import ActivationPage from "./pages/auth/activation";
 import LoginPage from "./pages/auth/login";
 import RegisterPage from "./pages/auth/register";
 import RoomDetailsPage from "./pages/details";
@@ -38,6 +39,7 @@ function App() {
               </ProtectedRoute>
               <Route path="/login" component={LoginPage} />
               <Route path="/register" component={RegisterPage} />
+              <Route path="/activation" component={ActivationPage} />
               <ProtectedRoute path="/classrooms/:id/join">
                 <JoinClassPage />
               </ProtectedRoute>

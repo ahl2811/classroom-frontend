@@ -7,27 +7,26 @@ import {
   Modal,
   ModalProps,
 } from "react-bootstrap";
-import { useMutation } from "react-query";
+import { useMutation, useQueryClient } from "react-query";
 import { toast, ToastContainer } from "react-toastify";
 import { ROOM } from "../../../common/constants";
-import { IErrorResponse } from "../../../common/types";
-import { toastError } from "../../../common/utils";
-import useUserContext from "../../../hooks/useUserContext";
 import LoadingButton from "../../../components/LoadingButton";
-import { joinRoom } from "../../details/api";
+import { joinRoomByCode } from "../../details/api";
 
 interface IProps extends ModalProps {}
 
 const ModalJoinClass = (props: IProps) => {
   const [code, setCode] = useState<string>("");
 
+  const queryClient = useQueryClient();
   const { isLoading, mutateAsync } = useMutation(
     ROOM.JOIN,
-    () => joinRoom({ id: "id", role: "student", code: `${code}` }),
+    () => joinRoomByCode({ role: "student", code: `${code}` }),
     {
-      // onSuccess: () => {
-      //   useHistory.push(`/classrooms/${"id"}`);
-      // },
+      onSuccess: () => {
+        toast.success("Join class successfully.");
+        queryClient.invalidateQueries(ROOM.GET);
+      },
       onError: () => {
         toast.error(
           "Sorry! You don't have a submission to join this classroom",

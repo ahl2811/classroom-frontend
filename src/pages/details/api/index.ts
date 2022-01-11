@@ -53,3 +53,18 @@ export const inviteByEmail = async ({
   );
   return data;
 };
+
+export const joinRoomByCode = async ({
+  code,
+  role = "student",
+}: {
+  code: string;
+  role?: string;
+}) => {
+  const queryString = `/classrooms/join?code=${code}&role=${role}`;
+  const { data } = await request.get<IRoomMembersResponse>(
+    queryString,
+    getAuthorization()
+  );
+  return data;
+};

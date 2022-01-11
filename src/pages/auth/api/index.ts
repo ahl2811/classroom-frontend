@@ -8,3 +8,7 @@ export const login = async (userInfo: IUser) => {
 export const register = async (userInfo: IUser) => {
   return await request.post("/auth/signup", userInfo);
 };
+
+export const activeAccount = async (token: string) => {
+  return await request.get(`/auth/activate-account?token=${token}`);
+};

@@ -96,10 +96,6 @@ const NewsPage = () => {
                       Copy code
                     </OptionItem>
                   </CopyToClipboard>
-                  <OptionItem>
-                    <i className="bi bi-arrow-counterclockwise fs-5 me-3" />
-                    Reset code
-                  </OptionItem>
                 </>
               }
             >

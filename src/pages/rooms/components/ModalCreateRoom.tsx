@@ -54,7 +54,9 @@ export default function ModalCreateRoom(props: ModalProps) {
     setDescription("");
     setSection("");
     setSubject("");
-    props.onHide();
+    if (props?.onHide) {
+      props.onHide();
+    }
   };
 
   return (

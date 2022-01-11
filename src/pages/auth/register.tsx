@@ -1,5 +1,5 @@
 import React, { FormEvent, useState } from "react";
-import { Button, Form, Row, Spinner, Stack } from "react-bootstrap";
+import { Form, Row, Stack } from "react-bootstrap";
 import { useMutation } from "react-query";
 import { useHistory, useLocation } from "react-router";
 import { Link } from "react-router-dom";
@@ -7,6 +7,7 @@ import { toast, ToastContainer } from "react-toastify";
 import { USER } from "../../common/constants";
 import { IErrorResponse, LocationState } from "../../common/types";
 import { toastError } from "../../common/utils";
+import LoadingButton from "../../components/LoadingButton";
 import useUserContext from "../../hooks/useUserContext";
 import { register } from "./api";
 import { GradientBackground, LoginContainer } from "./styles";
@@ -30,13 +31,13 @@ const RegisterPage = () => {
     register,
     {
       onSuccess: () => {
-        toast.success("Register successfully. Now you can login!", {
-          position: "top-center",
-          autoClose: 3000,
-        });
-        setTimeout(() => {
-          history.push("/login");
-        }, 2000);
+        toast.success(
+          "Register successfully. Check your email to active this account.",
+          {
+            position: "top-center",
+            autoClose: 5000,
+          }
+        );
       },
       onError: (err: IErrorResponse) => {
         toastError(err);
@@ -118,27 +119,14 @@ const RegisterPage = () => {
                 <Link to="/login">{"<<"} Back to Login page</Link>
               </Form.Group>
               <Row className="d-grid gap-2 col-6 mx-auto mt-4">
-                <Button
+                <LoadingButton
                   variant="primary"
                   type="submit"
-                  disabled={loading}
                   className="classroom-btn"
+                  isLoading={loading}
                 >
-                  {loading ? (
-                    <>
-                      <Spinner
-                        as="span"
-                        animation="border"
-                        size="sm"
-                        role="status"
-                        aria-hidden="true"
-                      />
-                      Vui lòng chờ...
-                    </>
-                  ) : (
-                    <>Sign up</>
-                  )}
-                </Button>
+                  Sign up
+                </LoadingButton>
               </Row>
             </Form>
           </Row>
