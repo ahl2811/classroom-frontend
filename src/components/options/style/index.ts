@@ -63,3 +63,10 @@ export const OptionItem = styled.div`
     background: #e3e3e3;
   }
 `;
+
+export const Badge = styled.div`
+  width: 8px;
+  height: 8px;
+  border-radius: 8px;
+  background: #f44336;
+`;

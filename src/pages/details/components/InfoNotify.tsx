@@ -8,16 +8,17 @@ interface IProps {
   children: ReactNode;
   footer?: ReactNode;
   optionItems?: ReactNode;
+  menuCenter?: boolean;
 }
 
 const InfoNotify = (props: IProps) => {
-  const { title, children, footer, optionItems } = props;
+  const { title, children, footer, optionItems, menuCenter = true } = props;
   return (
     <InfoNotifyCard className="w-100 notify-item">
       {optionItems && (
         <Options
           icon={<i className="bi bi-three-dots-vertical icon align-middle"></i>}
-          menuCenter={true}
+          menuCenter={menuCenter}
           className="position-absolute me-2 end-0 mt-2"
         >
           {optionItems}

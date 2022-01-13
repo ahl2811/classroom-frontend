@@ -24,6 +24,7 @@ import { GRADE_STRUCTURE } from "../../common/constants";
 import { getGradeStructures } from "../grade-structure/api";
 
 const initialObject = { [`${STUDENT_ID}`]: "", [`${NAME}`]: "" };
+const NotDisplayKeys = ["userId", "id"];
 export const DefaultGradeKeys = [STUDENT_ID, NAME, "totalGrade", "userId"];
 
 const GradesPage = () => {
@@ -122,7 +123,7 @@ const GradesPage = () => {
         {headerGroups.map((headerGroup) => (
           <tr {...headerGroup.getHeaderGroupProps()}>
             {headerGroup.headers
-              .filter((column) => column.id !== "userId")
+              .filter((column) => !NotDisplayKeys.includes(column.id))
               .map((column) => {
                 const gradeStruc = gradeStructure?.find(
                   (g) => g.name === column.id
@@ -232,7 +233,9 @@ const GradesPage = () => {
                   {
                     // Loop over the rows cells
                     row.cells
-                      .filter((cell) => cell.column.id !== "userId")
+                      .filter(
+                        (cell) => !NotDisplayKeys.includes(cell.column.id)
+                      )
                       .map((cell) => {
                         // Apply the cell props
                         return (

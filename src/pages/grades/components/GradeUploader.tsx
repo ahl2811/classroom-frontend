@@ -57,7 +57,6 @@ const GradeUploader = ({ onClose, show, id, roomId }: IProps) => {
         setListData(gradeData);
         return;
       }
-      console.log("data", data);
       toast(`Please upload CSV file with template ${template}`, {
         position: "bottom-left",
         type: "error",

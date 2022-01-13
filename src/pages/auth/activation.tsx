@@ -4,7 +4,7 @@ import { useQuery } from "react-query";
 import { useHistory, useLocation } from "react-router";
 import Logo from "../../assets/images/logo-classroom.svg";
 import { activeAccount } from "./api";
-import { ActivationContainer, GradientBackground } from "./styles";
+import { ActivationContainer, FullScreenContainer } from "./styles";
 
 const ActivationPage = () => {
   const { search } = useLocation();
@@ -21,7 +21,7 @@ const ActivationPage = () => {
   }
 
   return (
-    <GradientBackground className="d-flex align-items-center">
+    <FullScreenContainer className="d-flex align-items-center">
       <ActivationContainer>
         <div className="join-class-container align-self-center">
           <div className="join-class-banner">
@@ -50,7 +50,7 @@ const ActivationPage = () => {
           </div>
         </div>
       </ActivationContainer>
-    </GradientBackground>
+    </FullScreenContainer>
   );
 };
 

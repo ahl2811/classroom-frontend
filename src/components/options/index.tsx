@@ -1,16 +1,18 @@
 import React, { ReactElement, useRef, useState } from "react";
 import useOnClickOutside from "../../hooks/useOnClickOutSide";
-import { OptionMenu, OptionsStyle } from "./style";
+import { Badge, OptionMenu, OptionsStyle } from "./style";
 
 interface IOptionsProps extends React.HTMLAttributes<HTMLDivElement> {
   icon: ReactElement;
   menuCenter?: boolean;
+  badge?: boolean;
 }
 
 function Options({
   icon,
   menuCenter = false,
   children,
+  badge,
   ...rest
 }: IOptionsProps) {
   const [showMenu, setShowMenu] = useState(false);
@@ -32,6 +34,7 @@ function Options({
         {...rest}
       >
         <div className="blur-hover">{icon}</div>
+        {badge && <Badge className="position-absolute top-0 end-0 mt-1 me-1" />}
         {showMenu && (
           <OptionMenu menuCenter={menuCenter}>{children}</OptionMenu>
         )}

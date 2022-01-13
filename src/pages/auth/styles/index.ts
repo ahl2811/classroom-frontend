@@ -9,7 +9,7 @@ export const LoginContainer = styled(Container)`
   }
 `;
 
-export const GradientBackground = styled.div`
+export const FullScreenContainer = styled.div`
   width: 100vw;
   min-height: 100vh;
 `;

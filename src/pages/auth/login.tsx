@@ -3,16 +3,15 @@ import { Button, Form, Row, Spinner, Stack } from "react-bootstrap";
 import { useMutation } from "react-query";
 import { useHistory, useLocation } from "react-router";
 import { Link } from "react-router-dom";
-import { toast, ToastContainer } from "react-toastify";
+import { toast } from "react-toastify";
 import { USER } from "../../common/constants";
 import { IErrorResponse, IUser, LocationState } from "../../common/types";
 import { toastError } from "../../common/utils";
-import GoogleLoginButton from "./components/GoogleLoginButton";
-
 import useUserContext from "../../hooks/useUserContext";
 import { LoginSuccess } from "../../store/actions";
-import { GradientBackground, LoginContainer } from "./styles";
 import { login } from "./api";
+import GoogleLoginButton from "./components/GoogleLoginButton";
+import { FullScreenContainer, LoginContainer } from "./styles";
 
 const LoginPage = () => {
   const [email, setEmail] = useState("");
@@ -59,8 +58,7 @@ const LoginPage = () => {
   };
 
   return (
-    <GradientBackground className="d-flex align-items-center">
-      <ToastContainer />
+    <FullScreenContainer className="d-flex align-items-center">
       <LoginContainer className="border rounded-3 px-4 py-5 shadow bg-body d-flex">
         <Stack>
           <Row className="text-center mb-1 text-primary">
@@ -112,7 +110,11 @@ const LoginPage = () => {
                     <>Sign In</>
                   )}
                 </Button>
-                <Form.Label>Or you can</Form.Label>
+                <div className="d-flex flex-row justify-content-end fst-italic pt-2 pb-3">
+                  <Link to="/reset-password/provide-email">
+                    <span className="text-secondary">Forgot password?</span>
+                  </Link>
+                </div>
                 <GoogleLoginButton />
               </Form.Group>
               <Form.Group className="mt-3 text-center">
@@ -122,7 +124,7 @@ const LoginPage = () => {
           </Row>
         </Stack>
       </LoginContainer>
-    </GradientBackground>
+    </FullScreenContainer>
   );
 };
 

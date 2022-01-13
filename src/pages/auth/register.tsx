@@ -10,7 +10,7 @@ import { toastError } from "../../common/utils";
 import LoadingButton from "../../components/LoadingButton";
 import useUserContext from "../../hooks/useUserContext";
 import { register } from "./api";
-import { GradientBackground, LoginContainer } from "./styles";
+import { FullScreenContainer, LoginContainer } from "./styles";
 
 const RegisterPage = () => {
   const [name, setName] = useState("");
@@ -62,7 +62,7 @@ const RegisterPage = () => {
   };
 
   return (
-    <GradientBackground className="d-flex align-items-center">
+    <FullScreenContainer className="d-flex align-items-center">
       <ToastContainer />
       <LoginContainer className="border rounded-3 px-4 py-5 shadow bg-body d-flex">
         <Stack>
@@ -132,7 +132,7 @@ const RegisterPage = () => {
           </Row>
         </Stack>
       </LoginContainer>
-    </GradientBackground>
+    </FullScreenContainer>
   );
 };
 

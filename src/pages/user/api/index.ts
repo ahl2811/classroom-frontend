@@ -17,3 +17,10 @@ export const getUser = async (id: string) => {
   const { data } = await request.get<IUser>("/user/" + id, getAuthorization());
   return data;
 };
+
+export const changePassword = async (data: {
+  oldPassword: string;
+  newPassword: string;
+}) => {
+  return await request.patch("/user/password", data, getAuthorization());
+};

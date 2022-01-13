@@ -6,6 +6,7 @@ import {
   Navbar,
   Offcanvas,
   Button,
+  Badge,
 } from "react-bootstrap";
 import { Link, useHistory } from "react-router-dom";
 import useUserContext from "../../hooks/useUserContext";
@@ -16,6 +17,8 @@ import { OptionItem } from "../options/style";
 import { HeaderStyle } from "./style";
 import { OffCanvasStyle } from "./style/offcanvas";
 import ModalJoinClass from "../../pages/rooms/components/ModalJoinClass";
+import { NotificationContainer } from "./style/notification";
+import Notification from "../Notification";
 
 interface IHeader {
   roomDetailsNav?: ReactNode;
@@ -73,10 +76,43 @@ export default function Header({
               </>
             ) : (
               <Options
-                icon={<i className="bi bi-gear icon fs-5 fw-bold" />}
+                icon={<i className="bi bi-bell-fill icon fs-5 fw-bold" />}
                 className="position-relative"
+                menuCenter={true}
+                badge={true}
               >
-                <OptionItem>Settings</OptionItem>
+                <NotificationContainer>
+                  <Notification
+                    isRead={true}
+                    title="Thong bao"
+                    content="Day la content cua thong bao pla pla pla pla ewew"
+                  />
+                  <Notification
+                    isRead={false}
+                    title="Thong bao"
+                    content="Day la content cua thong bao pla pla pla pla ewew"
+                  />
+                  <Notification
+                    isRead={true}
+                    title="Thong bao"
+                    content="Day la content cua thong bao pla pla pla pla ewew"
+                  />
+                  <Notification
+                    isRead={true}
+                    title="Thong bao"
+                    content="Day la content cua thong bao pla pla pla pla ewew"
+                  />
+                  <Notification
+                    isRead={false}
+                    title="Thong bao"
+                    content="Day la content cua thong bao pla pla pla pla ewew"
+                  />
+                  <Notification
+                    isRead={true}
+                    title="Thong bao"
+                    content="Day la content cua thong bao pla pla pla pla ewew"
+                  />
+                </NotificationContainer>
               </Options>
             )}
           </Nav.Item>
@@ -92,6 +128,11 @@ export default function Header({
                 <OptionItem>
                   <i className="bi bi-person-lines-fill fs-5 me-3" /> View
                   profile
+                </OptionItem>
+              </Link>
+              <Link to={`/user/change-password`} className="link-item">
+                <OptionItem>
+                  <i className="bi bi-key-fill fs-5 me-3" /> Change password
                 </OptionItem>
               </Link>
               <OptionItem onClick={handleLogout}>
