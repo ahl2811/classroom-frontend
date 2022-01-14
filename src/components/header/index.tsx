@@ -6,7 +6,6 @@ import {
   Navbar,
   Offcanvas,
   Button,
-  Badge,
 } from "react-bootstrap";
 import { Link, useHistory } from "react-router-dom";
 import useUserContext from "../../hooks/useUserContext";

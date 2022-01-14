@@ -56,8 +56,10 @@ const StudentListUploader = ({ onClose, show, id, roomId }: IProps) => {
         const csvData = data.map((d: { data: any }) => d.data);
         const gradeData = csvData.map((d: any) => ({
           [`${STUDENT_ID}`]: d[`${STUDENT_ID}`],
-          name: Number(d["name"]),
+          name: d["name"],
         }));
+        console.log("data", data);
+        console.log("name", gradeData);
         setListData(gradeData);
         return;
       }

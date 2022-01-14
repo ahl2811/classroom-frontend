@@ -10,6 +10,7 @@ import {
 } from "react-router-dom";
 import Header from "../../components/header";
 import useMembers from "../../hooks/useMembers";
+import useUserContext from "../../hooks/useUserContext";
 import GradesPage from "../grades";
 import StudentScoresPage from "../scores";
 import MembersPage from "./members";
@@ -20,6 +21,8 @@ const RoomDetailsPage = () => {
   const location = useLocation();
   const { id } = useParams<{ id: string }>();
   const { isTeacher } = useMembers(id);
+  const { user } = useUserContext();
+  console.log("user", user);
   const RoomDetailsNav = useMemo(
     () => (
       <Nav
@@ -32,11 +35,6 @@ const RoomDetailsPage = () => {
               <Nav.Link href={`${url}`}>Stream</Nav.Link>
             </Link>
           </Nav.Item>
-          {/* <Nav.Item className="text-nowrap">
-            <Link to={`${url}/tasks`}>
-              <Nav.Link href={`${url}/tasks`}>Classworks</Nav.Link>
-            </Link>
-          </Nav.Item> */}
           <Nav.Item className="text-nowrap">
             <Link to={`${url}/members`}>
               <Nav.Link href={`${url}/members`}>People</Nav.Link>
@@ -50,7 +48,7 @@ const RoomDetailsPage = () => {
             </Nav.Item>
           ) : (
             <Nav.Item className="text-nowrap">
-              <Link to={`${url}/scores`}>
+              <Link to={`${url}/scores?studentId=${user?.studentId}`}>
                 <Nav.Link href={`${url}/scores`}>Scores</Nav.Link>
               </Link>
             </Nav.Item>
@@ -58,7 +56,7 @@ const RoomDetailsPage = () => {
         </div>
       </Nav>
     ),
-    [isTeacher, location.pathname, url]
+    [isTeacher, location.pathname, url, user?.studentId]
   );
 
   return (

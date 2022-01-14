@@ -44,8 +44,6 @@ const GradesPage = () => {
     }
   );
 
-  console.log("grades", grades);
-
   const { data: gradeStructure } = useQuery([GRADE_STRUCTURE.GET, roomId], () =>
     getGradeStructures(roomId)
   );
@@ -67,7 +65,7 @@ const GradesPage = () => {
 
           if (id === STUDENT_ID) {
             return values.userId ? (
-              <Link to={`/user/${cell.row.values.userId}`}>
+              <Link to={`scores?studentId=${value}`}>
                 <span className="classroom-link">{value}</span>
               </Link>
             ) : (

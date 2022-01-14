@@ -1,140 +1,85 @@
 import React from "react";
-import { Col, Dropdown, DropdownButton, Image, Row } from "react-bootstrap";
-import CopyToClipboard from "react-copy-to-clipboard";
+import { Accordion, Col, Row } from "react-bootstrap";
 import { useQuery } from "react-query";
-import { useParams } from "react-router";
-import { Link } from "react-router-dom";
-import { toast } from "react-toastify";
-import { GRADE_STRUCTURE, ROOM } from "../../common/constants";
-import { IErrorResponse, IRoomDetailResponse } from "../../common/types";
+import { useLocation, useParams } from "react-router";
+import { IErrorResponse } from "../../common/types";
 import DisplayByStatus from "../../components/DisplayByStatus";
-import { OptionItem } from "../../components/options/style";
-import useUserContext from "../../hooks/useUserContext";
-import { getRoomDetail } from "../details/api";
 import InfoNotify from "../details/components/InfoNotify";
-import { PostNotifyCard, RoomDetailsStyle } from "../details/style";
-import {
-  getGradeStructuresInfo,
-  IGradeStructure,
-} from "../grade-structure/api";
+import { getGradeDetails } from "./api";
+import { CommentInput } from "./components/CommentInput";
+import { CommentList } from "./components/CommentList";
 import { StudentScorePageStyle } from "./styles";
 
 const StudentScoresPage = () => {
-  const { user } = useUserContext();
   const { id: roomId } = useParams<{ id: string }>();
+  const { search } = useLocation();
+  const params = new URLSearchParams(search);
+  const studentId = params.get("studentId") || "";
+  const activeGradeId = params.get("activeGradeId") || undefined;
 
-  const { data: grades } = useQuery<IGradeStructure[], IErrorResponse>(
-    [GRADE_STRUCTURE.GET, roomId],
-    () => getGradeStructuresInfo(roomId)
-  );
+  console.log("studentId", studentId);
 
   const {
-    isLoading,
-    data: room,
+    data: gradeDetails,
     error,
-  } = useQuery<IRoomDetailResponse, IErrorResponse>([ROOM.DETAIL, roomId], () =>
-    getRoomDetail(roomId)
-  );
-
-  const copyToClipBoard = (value: string) => {
-    toast.success(`Copied ${value}`, {
-      position: "top-center",
-      autoClose: 3000,
-    });
-  };
-
-  const isTeacher = room?.teachers.findIndex((t) => t.id === user?.id) !== -1;
+    isLoading,
+  } = useQuery(["scores", studentId], () => getGradeDetails(roomId, studentId));
 
   if (error || isLoading) {
-    return <DisplayByStatus error={error} isLoading={isLoading} />;
+    return (
+      <DisplayByStatus error={error as IErrorResponse} isLoading={isLoading} />
+    );
   }
+
+  const user = gradeDetails?.user;
+  const grades = gradeDetails?.grades;
 
   return (
     <StudentScorePageStyle>
       <Row className="notify-items">
         <Col md={4} style={{ minWidth: 244 }}>
-          {isTeacher && (
-            <InfoNotify
-              title="Code"
-              optionItems={
-                <>
-                  <CopyToClipboard
-                    text={`${window.location.origin}/classrooms/${room?.classroom.id}/join?code=${room?.classroom.code}`}
-                    onCopy={() => copyToClipBoard("invitation link")}
-                  >
-                    <OptionItem>
-                      <i className="bi bi-link fs-5 me-3" />
-                      Copy invitation link
-                    </OptionItem>
-                  </CopyToClipboard>
-                  <CopyToClipboard
-                    text={`${room?.classroom.code}`}
-                    onCopy={() => copyToClipBoard("code")}
-                  >
-                    <OptionItem>
-                      <i className="bi bi-clipboard fs-5 me-3" />
-                      Copy code
-                    </OptionItem>
-                  </CopyToClipboard>
-                </>
-              }
-            >
-              <div className="code">{room?.classroom.code}</div>
-            </InfoNotify>
-          )}
-          {/* <InfoNotify title="Deadlines">
-            <div className="notify-deadline text-secondary">
-              Yeah no deadline!
-            </div>
-          </InfoNotify> */}
-          <InfoNotify
-            title="Grade Structure"
-            optionItems={
-              isTeacher && (
-                <Link to={`/classrooms/${roomId}/grade-structure`}>
-                  <OptionItem className="text-black">
-                    <i className="bi bi-pencil-square fs-5 me-2" /> Edit grade
-                    structure
-                  </OptionItem>
-                </Link>
-              )
-            }
-          >
+          <InfoNotify title="Grade Structure">
             <div className="d-flex flex-column mt-3">
-              {grades && grades.length > 0 ? (
-                grades.map((g) => {
-                  return (
-                    <div
-                      className="d-flex flex-row justify-content-between mt-1 text-content"
-                      key={g.id}
-                    >
-                      <div className="text-truncate pe-2">{g.name}</div>
-                      <div>{g.grade}</div>
-                    </div>
-                  );
-                })
-              ) : (
-                <div className="text-secondary text-center text-small">
-                  Grade structure is empty!
-                </div>
-              )}
+              <div className="text-secondary text-center text-small">
+                {user?.name}
+              </div>
             </div>
           </InfoNotify>
         </Col>
         <Col>
-          <InfoNotify
-            title="Grade Structure"
-            optionItems={
-              <Link to={`/classrooms/${roomId}/grade-structure`}>
-                <OptionItem className="text-black">
-                  <i className="bi bi-pencil-square fs-5 me-2" /> Edit grade
-                  structure
-                </OptionItem>
-              </Link>
-            }
-          >
-            jjjj
-          </InfoNotify>
+          {grades?.map(({ gradeId, grade, reportInfo, name }) => (
+            <Accordion
+              defaultActiveKey={activeGradeId}
+              className="rounded-lg mb-2"
+              key={gradeId}
+            >
+              <Accordion.Item eventKey="0">
+                <Accordion.Header>{name}</Accordion.Header>
+                <Accordion.Body className="px-0">
+                  <div className="px-20">
+                    <div>Điểm: {grade || "Chưa có"}</div>
+                    <div className="border p-2 my-2 rounded">
+                      <div className="fw-bold">Review</div>
+                      <div>
+                        <div>Điểm mong muốn: {reportInfo.expectedGrade}</div>
+                        <div>Nội dung: {reportInfo.message}</div>
+                        <div>Trạng thái: {reportInfo.reportStatus}</div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <hr className="border-bottom border-secondary" />
+                  <div className="px-20">
+                    <CommentList gradeId={gradeId} />
+                  </div>
+                  <hr className="border-bottom border-secondary" />
+                  <div className="px-20">
+                    <CommentInput gradeId={gradeId} />
+                  </div>
+                </Accordion.Body>
+              </Accordion.Item>
+            </Accordion>
+          ))}
         </Col>
       </Row>
     </StudentScorePageStyle>

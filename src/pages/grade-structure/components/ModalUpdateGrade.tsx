@@ -69,7 +69,7 @@ const ModalUpdateGrade = ({
       toast.error("Points must be a number", { position: "top-center" });
       return;
     }
-    if (DefaultGradeKeys.includes(name)) {
+    if ([...DefaultGradeKeys, "id"].includes(name)) {
       toast.error("Please use another name", { position: "top-center" });
       return;
     }
