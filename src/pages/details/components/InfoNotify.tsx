@@ -26,7 +26,7 @@ const InfoNotify = (props: IProps) => {
       )}
       <Card.Body>
         <Card.Title className="fs-6 text-normal">{title}</Card.Title>
-        <Card.Text>{children}</Card.Text>
+        <Card.Text as="div">{children}</Card.Text>
         {footer}
       </Card.Body>
     </InfoNotifyCard>

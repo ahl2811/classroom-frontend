@@ -55,7 +55,7 @@ export default function RoomsPage() {
                     </Options>
                     <Card.Img variant="top" src={getRandomImageLink()} />
                     <div className="position-absolute mt-4 ms-3 title text-white">
-                      <Link to={`/classrooms/${room.classroom.id}`}>
+                      <Link to={`/classrooms/${room.classroom.id}/streams`}>
                         <Card.Title className="text-truncate text-white link">
                           {room.classroom.name}
                         </Card.Title>
@@ -70,7 +70,7 @@ export default function RoomsPage() {
                       </Card.Text>
                     </Card.Body>
                     <Card.Body className="text-end border-top">
-                      <Link to={`/classrooms/${room.classroom.id}`}>
+                      <Link to={`/classrooms/${room.classroom.id}/streams`}>
                         <Button variant="light">View details</Button>
                       </Link>
                     </Card.Body>

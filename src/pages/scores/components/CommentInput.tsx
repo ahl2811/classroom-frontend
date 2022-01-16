@@ -15,7 +15,6 @@ export const CommentInput = ({ gradeId }: IProps) => {
 
   const { mutateAsync } = useMutation("post-comment", comment, {
     onSuccess: (comment) => {
-      console.log("res comment", comment);
       queryClient.setQueryData<IComment[]>(
         ["comments", gradeId],
         (oldQueryData) => {

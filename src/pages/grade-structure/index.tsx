@@ -114,79 +114,76 @@ const GradeStructurePage = () => {
   }
 
   return (
-    <>
-      <Header />
-      <GradeStructurePageStyle>
-        <DragDropContext onDragEnd={onDragEnd}>
-          <div className="page-container">
-            <div className="d-flex flex-row justify-content-between pb-2">
-              <h2 className="grade-structure">Grade Structure</h2>
-              <ModalAddGrade roomId={roomId} />
-            </div>
-            <Droppable droppableId="grades">
-              {(provided) => (
-                <div
-                  {...provided.droppableProps}
-                  ref={provided.innerRef}
-                  className="task-list"
-                >
-                  {grades.length > 0 ? (
-                    grades.map(({ id, name, grade }, index) => {
-                      return (
-                        <Draggable key={id} draggableId={id} index={index}>
-                          {(provided, snapshot) => (
-                            <div
-                              ref={provided.innerRef}
-                              {...provided.draggableProps}
-                              {...provided.dragHandleProps}
-                              style={getItemStyle(
-                                snapshot.isDragging,
-                                provided.draggableProps.style
-                              )}
-                              className="shadow-sm grade-item"
-                            >
-                              <div className="d-flex flex-row justify-content-between align-items-center">
-                                <div className="text-truncate">
-                                  <h5 className="text-truncate">{name}</h5>
-                                  <span className="rounded-pill text-white px-3 py-1 shadow-sm grade-badge">
-                                    {grade}
-                                  </span>
-                                </div>
-                                <div className="d-flex no-wrap">
-                                  <ModalUpdateGrade
-                                    roomId={roomId}
-                                    gradeName={name}
-                                    gradePoints={grade}
-                                    gradeId={id}
-                                  />
-                                  <IconButtonStyle
-                                    disabled={isDeleting}
-                                    onClick={() =>
-                                      handleDelete({ roomId, gradeId: id })
-                                    }
-                                  >
-                                    <i className="bi bi-trash text-black" />
-                                  </IconButtonStyle>
-                                </div>
+    <GradeStructurePageStyle>
+      <DragDropContext onDragEnd={onDragEnd}>
+        <div className="page-container">
+          <div className="d-flex flex-row justify-content-between pb-2">
+            <h2 className="grade-structure">Grade Structure</h2>
+            <ModalAddGrade roomId={roomId} />
+          </div>
+          <Droppable droppableId="grades">
+            {(provided) => (
+              <div
+                {...provided.droppableProps}
+                ref={provided.innerRef}
+                className="task-list"
+              >
+                {grades.length > 0 ? (
+                  grades.map(({ id, name, grade }, index) => {
+                    return (
+                      <Draggable key={id} draggableId={id} index={index}>
+                        {(provided, snapshot) => (
+                          <div
+                            ref={provided.innerRef}
+                            {...provided.draggableProps}
+                            {...provided.dragHandleProps}
+                            style={getItemStyle(
+                              snapshot.isDragging,
+                              provided.draggableProps.style
+                            )}
+                            className="shadow-sm grade-item"
+                          >
+                            <div className="d-flex flex-row justify-content-between align-items-center">
+                              <div className="text-truncate">
+                                <h5 className="text-truncate">{name}</h5>
+                                <span className="rounded-pill text-white px-3 py-1 shadow-sm grade-badge">
+                                  {grade}
+                                </span>
+                              </div>
+                              <div className="d-flex no-wrap">
+                                <ModalUpdateGrade
+                                  roomId={roomId}
+                                  gradeName={name}
+                                  gradePoints={grade}
+                                  gradeId={id}
+                                />
+                                <IconButtonStyle
+                                  disabled={isDeleting}
+                                  onClick={() =>
+                                    handleDelete({ roomId, gradeId: id })
+                                  }
+                                >
+                                  <i className="bi bi-trash text-black" />
+                                </IconButtonStyle>
                               </div>
                             </div>
-                          )}
-                        </Draggable>
-                      );
-                    })
-                  ) : (
-                    <div className="text-secondary text-center pt-4">
-                      Grade structure is empty!
-                    </div>
-                  )}
-                  {provided.placeholder}
-                </div>
-              )}
-            </Droppable>
-          </div>
-        </DragDropContext>
-      </GradeStructurePageStyle>
-    </>
+                          </div>
+                        )}
+                      </Draggable>
+                    );
+                  })
+                ) : (
+                  <div className="text-secondary text-center pt-4">
+                    Grade structure is empty!
+                  </div>
+                )}
+                {provided.placeholder}
+              </div>
+            )}
+          </Droppable>
+        </div>
+      </DragDropContext>
+    </GradeStructurePageStyle>
   );
 };
 

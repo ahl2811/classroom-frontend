@@ -7,7 +7,7 @@ export const RoomDetailsStyle = styled(PageContainer)`
 
   .banner {
     height: 240px;
-    background: teal;
+    background-image: url("https://www.gstatic.com/classroom/themes/img_concert.jpg");
   }
 
   .notify-item {

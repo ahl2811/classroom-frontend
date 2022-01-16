@@ -1,6 +1,7 @@
 import { IUser } from "../../../common/types";
 import { getAuthorization, request } from "../../../common/utils";
 import { ReportStatus } from "../../reviews/api";
+import { IAddReviewData } from "../components/ModalAddReview";
 
 export interface IGradeReviewDetail {
   gradeId: string;
@@ -9,8 +10,8 @@ export interface IGradeReviewDetail {
   isFinalize: boolean;
   reportInfo: {
     reportStatus: ReportStatus;
-    expectedGrade: number | null;
-    message: string | null;
+    expectedGrade: number;
+    message: string;
   };
 }
 
@@ -34,13 +35,31 @@ export const getGradeDetails = async (classId: string, studentId: string) => {
   return data;
 };
 
-export const requestReview = async (
-  gradeId: string,
-  data: { expectedGrade: number; message: string }
-) => {
-  return await request.post(
+export const requestReview = async ({
+  gradeId,
+  info,
+}: {
+  gradeId: string;
+  info: IAddReviewData;
+}) => {
+  const { data } = await request.post(
     `/grade/${gradeId}/request-review`,
-    data,
+    info,
+    getAuthorization()
+  );
+  return data;
+};
+
+export const markDecision = async (params: {
+  grade: number;
+  roomId: string;
+  gradeName: string;
+  studentId: string;
+}) => {
+  const { grade, roomId, gradeName, studentId } = params;
+  return await request.patch(
+    `/classrooms/${roomId}/grades/${gradeName}`,
+    [{ studentId, grade, isFinalize: true }],
     getAuthorization()
   );
 };

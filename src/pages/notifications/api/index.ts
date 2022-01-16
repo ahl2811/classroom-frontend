@@ -1,5 +1,6 @@
 import { IUser } from "../../../common/types";
 import { getAuthorization, request } from "../../../common/utils";
+import { IGradeStructure } from "../../grade-structure/api";
 import { IReviewGrade } from "../../reviews/api";
 
 export enum NotificationType {
@@ -19,7 +20,10 @@ export interface INotification {
   status: NotificationStatus;
   type: NotificationType;
   sender: IUser;
-  grade: IReviewGrade;
+  grade: IReviewGrade & {
+    gradeStructure: IGradeStructure;
+  };
+  classroomName: string;
 }
 
 export const getNotifications = async () => {
@@ -31,13 +35,13 @@ export const getNotifications = async () => {
 };
 
 export const viewNotifications = async () => {
-  return await request.patch(`/notification`, null, getAuthorization());
+  return await request.patch(`/notification`, undefined, getAuthorization());
 };
 
-export const readNotification = async (notiId: string) => {
+export const readNotification = async ({ notiId }: { notiId: string }) => {
   return await request.patch(
     `/notification/${notiId}`,
-    null,
+    undefined,
     getAuthorization()
   );
 };

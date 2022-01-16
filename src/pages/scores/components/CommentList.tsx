@@ -11,7 +11,6 @@ interface IProps {
 
 export const CommentList = ({ gradeId }: IProps) => {
   const [showComments, setShowComments] = useState(false);
-
   const { data } = useQuery(["comments", gradeId], () => getComments(gradeId));
 
   const count = data?.length || 0;
@@ -41,10 +40,37 @@ export const CommentList = ({ gradeId }: IProps) => {
           ? `View ${count || ""} comments`.trim()
           : "Hide comments"}
       </ButtonStyle>
-      {showComments && <Comments />}
+
+      <CommentsContainer className="small-scrollbar">
+        {showComments && <Comments />}
+      </CommentsContainer>
     </>
   );
 };
+
+const CommentsContainer = styled.div`
+  max-height: 300px;
+  overflow-y: auto;
+
+  &::-webkit-scrollbar {
+    max-width: 8px;
+    background-color: transparent;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    display: none;
+  }
+
+  &:hover {
+    &::-webkit-scrollbar-thumb {
+      display: block;
+      border-radius: 8px;
+      -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.1);
+      box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.1);
+      background-color: #bbb;
+    }
+  }
+`;
 
 const ButtonStyle = styled(Button)`
   &:hover {

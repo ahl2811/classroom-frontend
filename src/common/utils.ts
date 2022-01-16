@@ -53,9 +53,9 @@ export const toastError = (
 
 export const getRandomImageLink = () => {
   // const colors = ["008080", "006666", "004c4c"];
-  const colors = ["008080"];
-  const index = Math.floor(Math.random() * colors.length);
-  return `https://www.colorbook.io/imagecreator.php?hex=${colors[index]}&width=300&height=100`;
+  // const colors = ["008080"];
+  // const index = Math.floor(Math.random() * colors.length);
+  return `https://www.gstatic.com/classroom/themes/img_concert.jpg`;
 };
 
 export const getAvatarUrl = (name: string) => {

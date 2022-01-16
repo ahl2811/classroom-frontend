@@ -16,7 +16,6 @@ import PasswordAddnew from "./pages/auth/reset-password/new-password";
 import RoomDetailsPage from "./pages/details";
 import JoinClassPage from "./pages/details/join";
 import ErrorPage from "./pages/error";
-import GradeStructurePage from "./pages/grade-structure";
 import RoomsPage from "./pages/rooms";
 import ProfilePage from "./pages/user";
 import PasswordChange from "./pages/user/change-password";
@@ -51,9 +50,6 @@ function App() {
               <Route path="/reset-password" component={PasswordAddnew} />
               <ProtectedRoute path="/classrooms/:id/join">
                 <JoinClassPage />
-              </ProtectedRoute>
-              <ProtectedRoute path="/classrooms/:id/grade-structure">
-                <GradeStructurePage />
               </ProtectedRoute>
               <ProtectedRoute path="/classrooms/:id">
                 <RoomDetailsPage />

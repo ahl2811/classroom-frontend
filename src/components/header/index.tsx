@@ -1,23 +1,22 @@
 import React, { ReactNode, useState } from "react";
 import {
+  Button,
   Container,
   Image,
   Nav,
   Navbar,
   Offcanvas,
-  Button,
 } from "react-bootstrap";
 import { Link, useHistory } from "react-router-dom";
 import useUserContext from "../../hooks/useUserContext";
-import { Logout } from "../../store/actions";
 import ModalCreateRoom from "../../pages/rooms/components/ModalCreateRoom";
+import ModalJoinClass from "../../pages/rooms/components/ModalJoinClass";
+import { Logout } from "../../store/actions";
 import Options from "../options";
 import { OptionItem } from "../options/style";
+import { NotificationList } from "./NotificationList";
 import { HeaderStyle } from "./style";
 import { OffCanvasStyle } from "./style/offcanvas";
-import ModalJoinClass from "../../pages/rooms/components/ModalJoinClass";
-import { NotificationContainer } from "./style/notification";
-import Notification from "../Notification";
 
 interface IHeader {
   roomDetailsNav?: ReactNode;
@@ -55,7 +54,7 @@ export default function Header({
         {roomDetailsNav}
         <Nav className="justify-content-end order-2 order-md-last flex-nowrap flex-row">
           <Nav.Item>
-            {!roomDetailsNav ? (
+            {!roomDetailsNav && (
               <>
                 {isHome && (
                   <Options
@@ -63,6 +62,7 @@ export default function Header({
                       <i className="bi bi-plus-circle-dotted icon fs-5 fw-bold" />
                     }
                     className="position-relative"
+                    menuCenter={true}
                   >
                     <OptionItem onClick={() => setShowJoinClass(true)}>
                       Join a class
@@ -73,47 +73,10 @@ export default function Header({
                   </Options>
                 )}
               </>
-            ) : (
-              <Options
-                icon={<i className="bi bi-bell-fill icon fs-5 fw-bold" />}
-                className="position-relative"
-                menuCenter={true}
-                badge={true}
-              >
-                <NotificationContainer>
-                  <Notification
-                    isRead={true}
-                    title="Thong bao"
-                    content="Day la content cua thong bao pla pla pla pla ewew"
-                  />
-                  <Notification
-                    isRead={false}
-                    title="Thong bao"
-                    content="Day la content cua thong bao pla pla pla pla ewew"
-                  />
-                  <Notification
-                    isRead={true}
-                    title="Thong bao"
-                    content="Day la content cua thong bao pla pla pla pla ewew"
-                  />
-                  <Notification
-                    isRead={true}
-                    title="Thong bao"
-                    content="Day la content cua thong bao pla pla pla pla ewew"
-                  />
-                  <Notification
-                    isRead={false}
-                    title="Thong bao"
-                    content="Day la content cua thong bao pla pla pla pla ewew"
-                  />
-                  <Notification
-                    isRead={true}
-                    title="Thong bao"
-                    content="Day la content cua thong bao pla pla pla pla ewew"
-                  />
-                </NotificationContainer>
-              </Options>
             )}
+          </Nav.Item>
+          <Nav.Item>
+            <NotificationList />
           </Nav.Item>
           <Nav.Item>
             <Options

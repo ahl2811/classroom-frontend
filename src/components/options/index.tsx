@@ -6,13 +6,15 @@ interface IOptionsProps extends React.HTMLAttributes<HTMLDivElement> {
   icon: ReactElement;
   menuCenter?: boolean;
   badge?: boolean;
+  callback?: () => void;
 }
 
 function Options({
   icon,
   menuCenter = false,
   children,
-  badge,
+  badge = false,
+  callback,
   ...rest
 }: IOptionsProps) {
   const [showMenu, setShowMenu] = useState(false);
@@ -20,6 +22,7 @@ function Options({
   const ref = useRef(null);
 
   const handleClick = () => {
+    callback && callback();
     setShowMenu(!showMenu);
   };
 

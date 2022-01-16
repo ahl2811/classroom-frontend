@@ -40,11 +40,12 @@ export const exportGrade = (data: any[], id: string) => {
 export const exportGradeBoard = (data: any[]) => {
   const cloneData = JSON.parse(JSON.stringify(data));
   const newData = cloneData.map((d: any) => {
-    const unUseKeys = Object.keys(d).filter((k) => k.startsWith("isFinalize-"));
-    for (const key of unUseKeys) {
-      delete d[key];
-    }
     delete d.userId;
+    Object.keys(d).forEach((key) => {
+      if (![NAME, TOTAL, STUDENT_ID].includes(key)) {
+        d[key] = d[key].grade;
+      }
+    });
     return d;
   });
   return newData;
