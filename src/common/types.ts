@@ -6,6 +6,7 @@ export interface IUser {
   password?: string;
   id?: string;
   studentId?: string;
+  role?: string;
 }
 
 export interface IRoom {

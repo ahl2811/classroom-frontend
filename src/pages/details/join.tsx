@@ -23,7 +23,7 @@ const JoinClassPage = () => {
     () => getRoomMembers(`${id}`),
     {
       onSuccess: () => {
-        history.push(`/classrooms/${id}`);
+        history.push(`/classrooms/${id}/streams`);
       },
       retry: 1,
     }
@@ -34,7 +34,7 @@ const JoinClassPage = () => {
     () => joinRoom({ id, role: `${role}`, code: `${code}` }),
     {
       onSuccess: () => {
-        history.push(`/classrooms/${id}`);
+        history.push(`/classrooms/${id}/streams`);
       },
       onError: () => {
         toast.error(

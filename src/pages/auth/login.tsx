@@ -39,6 +39,12 @@ const LoginPage = () => {
     {
       onSuccess: (response) => {
         const { user: userRes, accessToken } = response.data;
+        if (userRes.role === "admin") {
+          toast.error("Please check your credentials.", {
+            position: "top-center",
+          });
+          return;
+        }
         const userInfo: IUser = {
           ...userRes,
           avatar: `https://ui-avatars.com/api/?name=${userRes.name}&background=0D8ABC&color=fff`,

@@ -15,7 +15,9 @@ import { NotificationContainer } from "./style/notification";
 
 export const NotificationList = () => {
   const queryClient = useQueryClient();
-  const { data } = useQuery("notifications", getNotifications);
+  const { data } = useQuery("notifications", getNotifications, {
+    refetchOnWindowFocus: true,
+  });
   const { mutateAsync } = useMutation("view-notifications", viewNotifications, {
     onSuccess: () => {
       queryClient.invalidateQueries("notifications");
