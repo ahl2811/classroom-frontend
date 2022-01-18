@@ -30,6 +30,7 @@ export default function RoomsPage() {
           return;
         }
       },
+      refetchOnWindowFocus: true,
     }
   );
 

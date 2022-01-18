@@ -92,7 +92,7 @@ const PasswordChange = () => {
                       value={values.oldPassword}
                       onChange={handleChange}
                       onBlur={handleBlur}
-                      isInvalid={!!errors.oldPassword}
+                      isInvalid={touched.oldPassword && !!errors.oldPassword}
                     />
                     <Form.Control.Feedback type="invalid">
                       {errors.oldPassword}
@@ -106,7 +106,7 @@ const PasswordChange = () => {
                       value={values.newPassword}
                       onChange={handleChange}
                       onBlur={handleBlur}
-                      isInvalid={!!errors.newPassword}
+                      isInvalid={touched.newPassword && !!errors.newPassword}
                       isValid={touched.newPassword && !errors.newPassword}
                     />
                     <Form.Control.Feedback type="invalid">
@@ -121,7 +121,9 @@ const PasswordChange = () => {
                       value={values.confirmPassword}
                       onChange={handleChange}
                       onBlur={handleBlur}
-                      isInvalid={!!errors.confirmPassword}
+                      isInvalid={
+                        touched.confirmPassword && !!errors.confirmPassword
+                      }
                       isValid={
                         touched.confirmPassword && !errors.confirmPassword
                       }
